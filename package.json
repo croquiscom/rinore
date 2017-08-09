@@ -15,11 +15,13 @@
     "url": "https://github.com/croquiscom/rinore/issues"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "tslint -p tsconfig.json"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^8.0.20",
+    "tslint": "^5.6.0",
     "typescript": "^2.4.2"
   }
 }

@@ -1,0 +1,17 @@
+{
+  "name": "rinore",
+  "version": "0.1.0",
+  "description": "Rich Node.js REPL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/croquiscom/rinore.git"
+  },
+  "keywords": [
+    "repl"
+  ],
+  "author": "Sangmin Yoon <sangmin.yoon@croquis.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/croquiscom/rinore/issues"
+  }
+}

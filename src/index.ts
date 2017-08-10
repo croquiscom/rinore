@@ -21,7 +21,15 @@ function loadModule(module: string, name: string) {
     name = camelCase(path.parse(module).name);
   }
   const loaded = require(module);
-  context[name] = loaded;
+  if (name === '*') {
+    for (const key in loaded) {
+      if (loaded.hasOwnProperty(key)) {
+        context[key] = loaded[key];
+      }
+    }
+  } else {
+    context[name] = loaded;
+  }
 }
 
 function loadModules(modules: string[]) {

@@ -1,4 +1,5 @@
 import program = require('commander');
+import { camelCase } from 'lodash';
 import path = require('path');
 
 import { start as startCoffeeScript } from './coffeescript';
@@ -7,7 +8,7 @@ import { start as startJavascript } from './javascript';
 import { context } from './context';
 
 function loadModule(module: string) {
-  const name = path.parse(module).name;
+  const name = camelCase(path.parse(module).name);
   const loaded = require(module);
   context[name] = loaded;
 }

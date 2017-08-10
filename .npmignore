@@ -1,0 +1,8 @@
+node_modules/
+*.tgz
+
+.npmignore
+tsconfig.json
+.editorconfig
+tslint.json
+src/

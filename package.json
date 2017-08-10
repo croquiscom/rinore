@@ -18,6 +18,9 @@
     "build": "rimraf lib && tsc",
     "lint": "tslint -p tsconfig.json"
   },
+  "bin": {
+    "rinore": "./bin/rinore"
+  },
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "dependencies": {

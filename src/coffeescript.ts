@@ -5,9 +5,9 @@ let repl: any;
 try {
 // tslint:disable-next-line:no-var-requires
   repl = require('coffeescript/repl');
-// tslint:disable-next-line:no-empty
-} catch (error) {
-}
+// tslint:disable-next-line:no-var-requires
+  require('coffeescript/register');
+} catch (error) {/* ignore */}
 
 export const start = () => {
   if (!repl) {

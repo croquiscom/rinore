@@ -18,6 +18,8 @@
     "build": "rimraf lib && tsc",
     "lint": "tslint -p tsconfig.json"
   },
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "dependencies": {
     "bluebird": "^3.5.0",
     "commander": "^2.11.0",

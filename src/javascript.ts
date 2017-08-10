@@ -62,6 +62,43 @@ function replaceEval(replServer: any) {
   };
 }
 
+function replaceCompleter(replServer: any) {
+  const originalCompleter = replServer.completer;
+  replServer.completer = (line: string, callback: (error?: any, result?: any) => void) => {
+    originalCompleter(line, (error?: any, result?: any) => {
+      line = line.replace(/\(\s*$/, '');
+      let showArgs = true;
+      if (error || !result[0]) {
+        // something wrong
+        showArgs = false;
+      } else if (result[0].length > 1) {
+        // more than one candidate
+        showArgs = false;
+      } else if (result[0].length === 1 && result[0][0] !== result[1]) {
+        // one candidate but need to be completed automatically
+        showArgs = false;
+      } else if (!/^[A-Za-z0-9_.]+\s*$/.test(line)) {
+        // support only for simple case
+        showArgs = false;
+      }
+      if (!showArgs) {
+        callback(error, result);
+        return;
+      }
+      replServer.eval(line, replServer.context, 'repl', (e?: any, object?: any) => {
+        if (typeof(object) === 'function') {
+          const argsMatch = object.toString().match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)
+              || object.toString().match(/^\(\s*([^\)]*)\)/m);
+          replServer.output.write(os.EOL);
+          replServer.output.write(`${line.trim()}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
+          replServer._refreshLine();
+        }
+        callback(error, result);
+      });
+    });
+  };
+}
+
 export const start = () => {
   const options: {[key: string]: any} = {
     historySize: 1000,
@@ -71,4 +108,5 @@ export const start = () => {
   setupHistory(replServer, path.join(os.homedir(), '.rinore_history_js'), 1000);
   setupContext(replServer);
   replaceEval(replServer);
+  replaceCompleter(replServer);
 };

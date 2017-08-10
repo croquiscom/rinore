@@ -75,7 +75,15 @@ export const startCLI = () => {
 
   loadModules(program.require as string[]);
 
-  if (program.language === 'coffeescript') {
+  start({language: program.language});
+};
+
+export interface IRinoreOptions {
+  language?: string;
+}
+
+export const start = (options?: IRinoreOptions) => {
+  if (options && options.language === 'coffeescript') {
     startCoffeeScript();
   } else {
     startJavascript();

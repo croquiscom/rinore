@@ -14,7 +14,12 @@ try {
 
 function replaceEval(replServer: any) {
   const originalEval = replServer.eval;
-  replServer.eval = (cmd: string, context: object, filename: string, callback: (error?: any, result?: any) => void) => {
+  replServer.eval = (cmd: string, context: {[key: string]: any},
+                     filename: string, callback: (error?: any, result?: any) => void) => {
+    let assignTo = '';
+    if (/^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test(cmd)) {
+      assignTo = RegExp.$1;
+    }
     const runner = new Promise((resolve, reject) => {
       originalEval(cmd, context, filename, (error?: any, result?: any) => {
         if (error) {
@@ -25,6 +30,9 @@ function replaceEval(replServer: any) {
       });
     });
     runner.then((result) => {
+      if (assignTo) {
+        context[assignTo] = result;
+      }
       callback(null, result);
     }).catch((error) => {
       callback(error);

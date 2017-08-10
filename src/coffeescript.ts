@@ -1,3 +1,4 @@
+import * as Promise from 'bluebird';
 import * as os from 'os';
 import * as path from 'path';
 
@@ -11,6 +12,26 @@ try {
   require('coffeescript/register');
 } catch (error) {/* ignore */}
 
+function replaceEval(replServer: any) {
+  const originalEval = replServer.eval;
+  replServer.eval = (cmd: string, context: object, filename: string, callback: (error?: any, result?: any) => void) => {
+    const runner = new Promise((resolve, reject) => {
+      originalEval(cmd, context, filename, (error?: any, result?: any) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+    runner.then((result) => {
+      callback(null, result);
+    }).catch((error) => {
+      callback(error);
+    });
+  };
+}
+
 export const start = () => {
   if (!repl) {
     throw new Error('Please install coffeescript module');
@@ -21,4 +42,5 @@ export const start = () => {
   };
   const replServer = repl.start(options);
   setupContext(replServer);
+  replaceEval(replServer);
 };

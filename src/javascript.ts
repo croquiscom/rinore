@@ -1,3 +1,4 @@
+import * as Promise from 'bluebird';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -33,6 +34,26 @@ function setupHistory(replServer: repl.REPLServer, historyFile: string, historyS
   });
 }
 
+function replaceEval(replServer: any) {
+  const originalEval = replServer.eval;
+  replServer.eval = (cmd: string, context: object, filename: string, callback: (error?: any, result?: any) => void) => {
+    const runner = new Promise((resolve, reject) => {
+      originalEval(cmd, context, filename, (error?: any, result?: any) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+    runner.then((result) => {
+      callback(null, result);
+    }).catch((error) => {
+      callback(error);
+    });
+  };
+}
+
 export const start = () => {
   const options: {[key: string]: any} = {
     historySize: 1000,
@@ -41,4 +62,5 @@ export const start = () => {
   const replServer = repl.start(options);
   setupHistory(replServer, path.join(os.homedir(), '.rinore_history_js'), 1000);
   setupContext(replServer);
+  replaceEval(replServer);
 };

@@ -8,9 +8,9 @@ import { setupContext } from './context';
 let repl: any;
 try {
 // tslint:disable-next-line:no-var-requires
-  repl = require('coffeescript/repl');
+  repl = require('coffee-script/repl');
 // tslint:disable-next-line:no-var-requires
-  require('coffeescript/register');
+  require('coffee-script/register');
 } catch (error) {/* ignore */}
 
 function replaceEval(replServer: any) {

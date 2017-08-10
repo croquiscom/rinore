@@ -1,6 +1,7 @@
 import program = require('commander');
 import { camelCase } from 'lodash';
 import path = require('path');
+import * as repl from 'repl';
 
 import { start as startCoffeeScript } from './coffeescript';
 import { start as startJavascript } from './javascript';
@@ -75,18 +76,24 @@ export const startCLI = () => {
 
   loadModules(program.require as string[]);
 
-  start({language: program.language});
+  start({language: program.language})
+  .on('exit', () => {
+    // exit CLI process even if there are scheduled works
+    setImmediate(() => {
+      process.exit(0);
+    });
+  });
 };
 
 export interface IRinoreOptions {
   language?: string;
 }
 
-export const start = (options?: IRinoreOptions) => {
+export const start = (options?: IRinoreOptions): repl.REPLServer => {
   if (options && options.language === 'coffeescript') {
-    startCoffeeScript();
+    return startCoffeeScript();
   } else {
-    startJavascript();
+    return startJavascript();
   }
 };
 

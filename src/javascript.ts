@@ -99,7 +99,7 @@ function replaceCompleter(replServer: any) {
   };
 }
 
-export const start = () => {
+export const start = (): repl.REPLServer => {
   const options: {[key: string]: any} = {
     historySize: 1000,
     prompt: 'rinore> ',
@@ -109,4 +109,5 @@ export const start = () => {
   setupContext(replServer);
   replaceEval(replServer);
   replaceCompleter(replServer);
+  return replServer;
 };

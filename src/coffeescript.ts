@@ -1,6 +1,7 @@
 import * as Promise from 'bluebird';
 import * as os from 'os';
 import * as path from 'path';
+import * as nodeRepl from 'repl';
 
 import { setupContext } from './context';
 
@@ -75,7 +76,7 @@ function replaceCompleter(replServer: any) {
   };
 }
 
-export const start = () => {
+export const start = (): nodeRepl.REPLServer => {
   if (!repl) {
     throw new Error('Please install coffeescript module');
   }
@@ -87,4 +88,5 @@ export const start = () => {
   setupContext(replServer);
   replaceEval(replServer);
   replaceCompleter(replServer);
+  return replServer;
 };

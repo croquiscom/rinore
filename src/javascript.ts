@@ -3,6 +3,8 @@ import * as os from 'os';
 import * as path from 'path';
 import * as repl from 'repl';
 
+import { setupContext } from './context';
+
 function setupHistory(replServer: repl.REPLServer, historyFile: string, historySize: number) {
   try {
     const data = fs.readFileSync(historyFile, 'utf8');
@@ -38,4 +40,5 @@ export const start = () => {
   };
   const replServer = repl.start(options);
   setupHistory(replServer, path.join(os.homedir(), '.rinore_history_js'), 1000);
+  setupContext(replServer);
 };

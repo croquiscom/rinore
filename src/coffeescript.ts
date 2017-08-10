@@ -1,6 +1,8 @@
 import * as os from 'os';
 import * as path from 'path';
 
+import { setupContext } from './context';
+
 let repl: any;
 try {
 // tslint:disable-next-line:no-var-requires
@@ -17,5 +19,6 @@ export const start = () => {
     historyFile: path.join(os.homedir(), '.rinore_history_cs'),
     prompt: 'rinore> ',
   };
-  repl.start(options);
+  const replServer = repl.start(options);
+  setupContext(replServer);
 };

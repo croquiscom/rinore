@@ -7,25 +7,42 @@ import { start as startJavascript } from './javascript';
 
 import { context } from './context';
 
-function loadModule(module: string) {
-  const name = camelCase(path.parse(module).name);
+function splitModuleName(module: string): [string, string] {
+  if (module.lastIndexOf(':') >= 0) {
+    const pos = module.lastIndexOf(':');
+    return [module.substr(0, pos), module.substr(pos + 1)];
+  } else {
+    return [module, ''];
+  }
+}
+
+function loadModule(module: string, name: string) {
+  if (!name) {
+    name = camelCase(path.parse(module).name);
+  }
   const loaded = require(module);
   context[name] = loaded;
 }
 
 function loadModules(modules: string[]) {
   const cwd = process.cwd();
-  for (const module of modules) {
-    console.log(`Loading module '${module}'...`);
+  for (let module of modules) {
+    let name = '';
+    [module, name] = splitModuleName(module);
+    if (name) {
+      console.log(`Loading module '${module}' as '${name}'...`);
+    } else {
+      console.log(`Loading module '${module}'...`);
+    }
     try {
       // try to load local file first
       const localPath = path.resolve(cwd, module);
-      loadModule(localPath);
+      loadModule(localPath, name);
     } catch (error) {
       if (error.code === 'MODULE_NOT_FOUND') {
         try {
           // try to load npm module (local or global)
-          loadModule(module);
+          loadModule(module, name);
         } catch (error) {
           console.log(error.toString());
         }

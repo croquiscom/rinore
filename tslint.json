@@ -5,13 +5,8 @@
   ],
   "jsRules": {},
   "rules": {
-    "quotemark": {
-      "options": [
-        "single",
-        "jsx-single",
-        "avoid-escape"
-      ]
-    }
+    "no-console": [false],
+    "quotemark": ["single", "jsx-single", "avoid-escape"]
   },
   "rulesDirectory": []
 }

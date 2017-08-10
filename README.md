@@ -123,4 +123,4 @@ To find best REPL experience, Rinore has referred some projects:
 
 # License
 
-MIT licenses. See [LICENSE](https://github.com/sloria/local-repl/blob/master/LICENSE) for more details.
+MIT licenses. See [LICENSE](https://github.com/croquiscom/rinore/blob/master/LICENSE) for more details.

@@ -64,16 +64,20 @@ function testSpawn(language: string, argumentList: string[],
   const child = spawn(`${__dirname}/../bin/rinore`, argumentList);
   child.stdout.setEncoding('utf8');
   child.stdout.on('data', (data: string) => {
-    if (data === 'rinore> ') {
-      if (expressionList.length > 0) {
-        child.stdin.write(expressionList.shift() + '\n');
+    for (const line of data.split('\n')) {
+      if (line === 'rinore> ') {
+        if (expressionList.length > 0) {
+          child.stdin.write(expressionList.shift() + '\n');
+        } else {
+          child.stdin.end();
+          child.kill();
+          waitOutputResolve();
+        }
       } else {
-        child.stdin.end();
-        child.kill();
-        waitOutputResolve();
+        if (line.trim()) {
+          logs.push(line.trim());
+        }
       }
-    } else {
-      logs.push(data.trim());
     }
   });
 

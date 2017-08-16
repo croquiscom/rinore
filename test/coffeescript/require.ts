@@ -24,4 +24,18 @@ describe('require', () => {
     ];
     return testSpawnCoffeescript(argumentList, expressionList, expectedList);
   });
+
+  it('require an own file', () => {
+    const argumentList = ['-r', 'samples/math_utils'];
+    const expressionList = [
+      'mathUtils.add 1, 2',
+      'mathUtils.sub 10, 3',
+    ];
+    const expectedList = [
+      "Loading module 'samples/math_utils'...",
+      '3',
+      '7',
+    ];
+    return testSpawnCoffeescript(argumentList, expressionList, expectedList);
+  });
 });

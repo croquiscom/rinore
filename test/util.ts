@@ -61,7 +61,9 @@ function testSpawn(language: string, argumentList: string[],
 
   argumentList.push('-l', language);
   const logs: string[] = [];
-  const child = spawn(`${__dirname}/../bin/rinore`, argumentList);
+  const child = spawn(`${__dirname}/../bin/rinore`, argumentList, {
+    cwd: `${__dirname}/${language}`,
+  });
   child.stdout.setEncoding('utf8');
   child.stdout.on('data', (data: string) => {
     for (const line of data.split('\n')) {

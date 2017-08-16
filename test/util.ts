@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import * as stream from 'stream';
 import * as rinore from '../src';
 
-function testSimple(language: string, expression: string, expected: string): Promise<void> {
+function testSimple(language: string, expressionList: string[], expectedList: string[]): Promise<void> {
   let waitOutputResolve: () => void;
   const waitOutput = new Promise<void>((resolve, reject) => {
     waitOutputResolve = resolve;
@@ -10,21 +10,19 @@ function testSimple(language: string, expression: string, expected: string): Pro
 
   const input = new stream.Readable({
     read(size) {
-      this.push(expression + '\n');
-      this.push(null);
+      // nothing to do
     },
   });
 
   const logs: string[] = [];
-  let gotPrompt = false;
   const output = new stream.Writable({
     objectMode: true,
     write(chunk: string, encoding, callback) {
       if (chunk === 'rinore> ') {
-        if (!gotPrompt) {
-          // ignore first prompt
-          gotPrompt = true;
+        if (expressionList.length > 0) {
+          input.push(expressionList.shift() + '\n');
         } else {
+          input.push(null);
           waitOutputResolve();
         }
       } else {
@@ -41,14 +39,14 @@ function testSimple(language: string, expression: string, expected: string): Pro
   });
   return waitOutput
     .then(() => {
-      expect(logs).to.eql([expected]);
+      expect(logs).to.eql(expectedList);
     });
 }
 
-export function testSimpleJavascript(expression: string, expected: string): Promise<void> {
-  return testSimple('javascript', expression, expected);
+export function testSimpleJavascript(expressionList: string[], expectedList: string[]): Promise<void> {
+  return testSimple('javascript', expressionList, expectedList);
 }
 
-export function testSimpleCoffeescript(expression: string, expected: string): Promise<void> {
-  return testSimple('coffeescript', expression, expected);
+export function testSimpleCoffeescript(expressionList: string[], expectedList: string[]): Promise<void> {
+  return testSimple('coffeescript', expressionList, expectedList);
 }

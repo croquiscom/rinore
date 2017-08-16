@@ -46,7 +46,7 @@ rinore> lodash([1, 2, 3]).map(v => v * 2).reverse().value()
 You can specify an another name using `:`:
 
 ```
-$ rinore -r lodash
+$ rinore -r lodash:l
 Loading module 'lodash' as 'l'...
 rinore> l([1, 2, 3]).map(v => v * 2).reverse().value()
 [ 6, 4, 2 ]

@@ -52,4 +52,16 @@ describe('require', () => {
     ];
     return testSpawnJavascript(argumentList, expressionList, expectedList);
   });
+
+  it('rinore.context', () => {
+    const argumentList = ['-r', 'samples/math_utils'];
+    const expressionList = [
+      'mul(3, 7)',
+    ];
+    const expectedList = [
+      "Loading module 'samples/math_utils'...",
+      '21',
+    ];
+    return testSpawnJavascript(argumentList, expressionList, expectedList);
+  });
 });

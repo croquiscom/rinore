@@ -52,4 +52,16 @@ describe('require', () => {
     ];
     return testSpawnCoffeescript(argumentList, expressionList, expectedList);
   });
+
+  it('rinore.context', () => {
+    const argumentList = ['-r', 'samples/math_utils'];
+    const expressionList = [
+      'mul 3, 7',
+    ];
+    const expectedList = [
+      "Loading module 'samples/math_utils'...",
+      '21',
+    ];
+    return testSpawnCoffeescript(argumentList, expressionList, expectedList);
+  });
 });

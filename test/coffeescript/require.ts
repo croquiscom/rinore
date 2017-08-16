@@ -38,4 +38,18 @@ describe('require', () => {
     ];
     return testSpawnCoffeescript(argumentList, expressionList, expectedList);
   });
+
+  it('expose objects as global', () => {
+    const argumentList = ['-r', 'samples/math_utils:*'];
+    const expressionList = [
+      'add 1, 2',
+      'sub 10, 3',
+    ];
+    const expectedList = [
+      "Loading module 'samples/math_utils' as '*'...",
+      '3',
+      '7',
+    ];
+    return testSpawnCoffeescript(argumentList, expressionList, expectedList);
+  });
 });

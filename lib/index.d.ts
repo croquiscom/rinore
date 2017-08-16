@@ -4,6 +4,10 @@ import { context } from './context';
 export declare const startCLI: () => void;
 export interface IRinoreOptions {
     language?: string;
+    prompt?: string;
+    input?: NodeJS.ReadableStream;
+    output?: NodeJS.WritableStream;
+    terminal?: boolean;
 }
-export declare const start: (options?: IRinoreOptions | undefined) => repl.REPLServer;
+export declare const start: (options?: IRinoreOptions) => repl.REPLServer;
 export { context };

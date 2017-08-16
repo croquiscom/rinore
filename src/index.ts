@@ -87,13 +87,17 @@ export const startCLI = () => {
 
 export interface IRinoreOptions {
   language?: string;
+  prompt?: string;
+  input?: NodeJS.ReadableStream;
+  output?: NodeJS.WritableStream;
+  terminal?: boolean;
 }
 
-export const start = (options?: IRinoreOptions): repl.REPLServer => {
-  if (options && options.language === 'coffeescript') {
-    return startCoffeeScript();
+export const start = (options: IRinoreOptions = {}): repl.REPLServer => {
+  if (options.language === 'coffeescript') {
+    return startCoffeeScript(options);
   } else {
-    return startJavascript();
+    return startJavascript(options);
   }
 };
 

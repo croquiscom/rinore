@@ -3,6 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as nodeRepl from 'repl';
 
+import { IRinoreOptions } from '.';
 import { setupContext } from './context';
 
 let repl: any;
@@ -76,13 +77,16 @@ function replaceCompleter(replServer: any) {
   };
 }
 
-export const start = (): nodeRepl.REPLServer => {
+export const start = (rinoreOptions: IRinoreOptions): nodeRepl.REPLServer => {
   if (!repl) {
     throw new Error('Please install coffeescript module');
   }
   const options: {[key: string]: any} = {
     historyFile: path.join(os.homedir(), '.rinore_history_cs'),
-    prompt: 'rinore> ',
+    input: rinoreOptions.input,
+    output: rinoreOptions.output,
+    prompt: rinoreOptions.prompt || 'rinore> ',
+    terminal: rinoreOptions.terminal,
   };
   const replServer = repl.start(options);
   setupContext(replServer);

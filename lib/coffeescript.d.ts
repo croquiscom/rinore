@@ -1,3 +1,4 @@
 /// <reference types="node" />
 import * as nodeRepl from 'repl';
-export declare const start: () => nodeRepl.REPLServer;
+import { IRinoreOptions } from '.';
+export declare const start: (rinoreOptions: IRinoreOptions) => nodeRepl.REPLServer;

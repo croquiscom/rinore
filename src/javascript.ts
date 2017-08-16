@@ -4,6 +4,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as repl from 'repl';
 
+import { IRinoreOptions } from '.';
 import { setupContext } from './context';
 
 function setupHistory(replServer: repl.REPLServer, historyFile: string, historySize: number) {
@@ -99,10 +100,13 @@ function replaceCompleter(replServer: any) {
   };
 }
 
-export const start = (): repl.REPLServer => {
+export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
   const options: {[key: string]: any} = {
     historySize: 1000,
-    prompt: 'rinore> ',
+    input: rinoreOptions.input,
+    output: rinoreOptions.output,
+    prompt: rinoreOptions.prompt || 'rinore> ',
+    terminal: rinoreOptions.terminal,
   };
   const replServer = repl.start(options);
   setupHistory(replServer, path.join(os.homedir(), '.rinore_history_js'), 1000);

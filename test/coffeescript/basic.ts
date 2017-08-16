@@ -7,3 +7,7 @@ it('simple expression', () => {
 it('multiple statement', () => {
   return testSimpleCoffeescript(['a = 10', 'a * 2'], ['10', '20']);
 });
+
+it('define function and call', () => {
+  return testSimpleCoffeescript(['sum = (a, b) -> a + b', 'sum 3, 8'], ['[Function: sum]', '11']);
+});

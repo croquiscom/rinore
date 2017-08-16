@@ -16,8 +16,9 @@
   },
   "scripts": {
     "prepublish": "npm run lint && npm run build",
-    "build": "rimraf lib && tsc",
-    "lint": "tslint -p tsconfig.json"
+    "build": "rimraf lib && tsc -p src/tsconfig.build.json",
+    "lint": "tslint -p tsconfig.json",
+    "test": "mocha --compilers ts:ts-node/register"
   },
   "bin": {
     "rinore": "./bin/rinore"
@@ -31,11 +32,16 @@
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.8",
+    "@types/chai": "^4.0.3",
     "@types/commander": "^2.9.1",
     "@types/lodash": "^4.14.72",
+    "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.20",
+    "chai": "^4.1.1",
     "coffee-script": "^1.12.7",
+    "mocha": "^3.5.0",
     "rimraf": "^2.6.1",
+    "ts-node": "^3.3.0",
     "tslint": "^5.6.0",
     "typescript": "^2.4.2"
   }

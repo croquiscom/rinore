@@ -1,14 +1,17 @@
+import { diffLines } from 'diff';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as repl from 'repl';
+import * as vm from 'vm';
 
 import { IRinoreOptions } from '.';
 import { setupContext } from './context';
 
+let register: { compile(code: string, fileName: string, lineOffset?: number): string; };
 try {
 // tslint:disable-next-line:no-var-requires
-  require('ts-node/register');
+  register = require('ts-node').register();
 } catch (error) {/* ignore */}
 
 function setupHistory(replServer: repl.REPLServer, historyFile: string, historySize: number) {
@@ -39,14 +42,36 @@ function setupHistory(replServer: repl.REPLServer, historyFile: string, historyS
   });
 }
 
-function tsEval(cmd: string, context: {[key: string]: any},
-                filename: string, callback: (error?: any, result?: any) => void): void {
-  callback(null, '');
-}
-
 export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
+  if (!register) {
+    throw new Error('Please install ts-node module');
+  }
+  const accumulatedCode = {
+    input: '',
+    output: '"use strict";\n',
+  };
   const options: {[key: string]: any} = {
-    eval: tsEval,
+    eval: function tsEval(cmd: string, context: {[key: string]: any},
+                          filename: string, callback: (error?: any, result?: any) => void): void {
+      let jsCode: string;
+      try {
+        jsCode = register.compile(accumulatedCode.input + cmd, '[eval].ts');
+      } catch (error) {
+        callback(error);
+        return;
+      }
+      try {
+        const changes = diffLines(accumulatedCode.output, jsCode);
+        const result = changes.reduce((r, change) => {
+          return change.added ? vm.runInContext(change.value, context, {filename}) : r;
+        }, undefined);
+        accumulatedCode.input += cmd;
+        accumulatedCode.output = jsCode;
+        callback(null, result);
+      } catch (error) {
+        callback(error);
+      }
+    },
     historySize: 1000,
     input: rinoreOptions.input,
     output: rinoreOptions.output,

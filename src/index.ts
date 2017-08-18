@@ -5,6 +5,7 @@ import * as repl from 'repl';
 
 import { start as startCoffeeScript } from './coffeescript';
 import { start as startJavascript } from './javascript';
+import { start as startTypescript } from './typescript';
 
 import { context } from './context';
 
@@ -96,6 +97,8 @@ export interface IRinoreOptions {
 export const start = (options: IRinoreOptions = {}): repl.REPLServer => {
   if (options.language === 'coffeescript') {
     return startCoffeeScript(options);
+  } else if (options.language === 'typescript') {
+    return startTypescript(options);
   } else {
     return startJavascript(options);
   }

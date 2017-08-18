@@ -52,6 +52,10 @@ export function testSimpleCoffeescript(expressionList: string[], expectedList: s
   return testSimple('coffeescript', expressionList, expectedList);
 }
 
+export function testSimpleTypescript(expressionList: string[], expectedList: string[]): Promise<void> {
+  return testSimple('typescript', expressionList, expectedList);
+}
+
 function testSpawn(language: string, argumentList: string[],
         expressionList: string[], expectedList: string[]): Promise<void> {
   let waitOutputResolve: () => void;
@@ -97,4 +101,9 @@ export function testSpawnJavascript(argumentList: string[],
 export function testSpawnCoffeescript(argumentList: string[],
         expressionList: string[], expectedList: string[]): Promise<void> {
   return testSpawn('coffeescript', argumentList, expressionList, expectedList);
+}
+
+export function testSpawnTypescript(argumentList: string[],
+  expressionList: string[], expectedList: string[]): Promise<void> {
+return testSpawn('typescript', argumentList, expressionList, expectedList);
 }

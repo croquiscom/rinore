@@ -6,7 +6,7 @@ import * as repl from 'repl';
 import * as vm from 'vm';
 
 import { IRinoreOptions } from '.';
-import { context as rinoreContext, setupContext } from './context';
+import { context as rinoreContext, modules as rinoreModules, setupContext } from './context';
 
 let register: { compile(code: string, fileName: string, lineOffset?: number): string; };
 try {
@@ -83,9 +83,22 @@ export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
   const replServer = repl.start(options);
   setupHistory(replServer, path.join(os.homedir(), '.rinore_history_ts'), 1000);
   setupContext(replServer);
+  vm.runInContext('exports = module.exports', replServer.context);
+  const imported: string[] = [];
+  for (const module of rinoreModules) {
+    if (module.name === '*') {
+      imported.push.apply(imported, module.members);
+      accumulatedCode.input += `import {${module.members.join(',')}} from '${module.module}'\n`;
+    } else {
+      imported.push(module.name);
+      accumulatedCode.input += `import * as ${module.name} from '${module.module}'\n`;
+    }
+  }
   for (const key in rinoreContext) {
     if (rinoreContext.hasOwnProperty(key)) {
-      accumulatedCode.input += `declare var ${key}: any;\n`;
+      if (imported.indexOf(key) < 0) {
+        accumulatedCode.input += `declare var ${key}: any;\n`;
+      }
     }
   }
   return replServer;

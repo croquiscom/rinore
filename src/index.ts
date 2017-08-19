@@ -7,7 +7,7 @@ import { start as startCoffeeScript } from './coffeescript';
 import { start as startJavascript } from './javascript';
 import { start as startTypescript } from './typescript';
 
-import { context } from './context';
+import { context as rinoreContext, modules as rinoreModules } from './context';
 
 function splitModuleName(module: string): [string, string] {
   if (module.lastIndexOf(':') >= 0) {
@@ -23,15 +23,18 @@ function loadModule(module: string, name: string) {
     name = camelCase(path.parse(module).name);
   }
   const loaded = require(module);
+  const members: string[] = [];
   if (name === '*') {
     for (const key in loaded) {
       if (loaded.hasOwnProperty(key)) {
-        context[key] = loaded[key];
+        rinoreContext[key] = loaded[key];
+        members.push(key);
       }
     }
   } else {
-    context[name] = loaded;
+    rinoreContext[name] = loaded;
   }
+  rinoreModules.push({module, name, members});
 }
 
 function loadModules(modules: string[]) {
@@ -104,4 +107,4 @@ export const start = (options: IRinoreOptions = {}): repl.REPLServer => {
   }
 };
 
-export { context };
+export { rinoreContext as context };

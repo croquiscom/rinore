@@ -8,6 +8,13 @@ import * as vm from 'vm';
 import { IRinoreOptions } from '.';
 import { context as rinoreContext, modules as rinoreModules, setupContext } from './context';
 
+const nodeModules = [
+  'assert', 'buffer', 'child_process', 'cluster', 'dgram', 'dns',
+  'domain', 'events', 'fs', 'http', 'https', 'net', 'os', 'path',
+  'punycode', 'querystring', 'readline', 'repl', 'stream', 'string_decoder',
+  'tls', 'tty', 'url', 'util', 'v8', 'vm', 'zlib',
+];
+
 let register: {
   compile(code: string, fileName: string, lineOffset?: number): string,
   getTypeInfo(code: string, fileName: string, position: number): {name: string, comment: string},
@@ -120,6 +127,9 @@ export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
   setupContext(replServer);
   vm.runInContext('exports = module.exports', replServer.context);
   const imported: string[] = [];
+  for (const module of nodeModules) {
+    accumulatedCode.input += `import * as ${module} from '${module}'\n`;
+  }
   for (const module of rinoreModules) {
     if (module.name === '*') {
       imported.push.apply(imported, module.members);
@@ -136,5 +146,7 @@ export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
       }
     }
   }
+  // hack: import makes that first const statement returns {} instead of undefined
+  accumulatedCode.input += 'void 0\n';
   return replServer;
 };

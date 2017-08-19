@@ -9,6 +9,10 @@ describe('basic', () => {
     return testSimpleTypescript(['const a: number = 10', 'a * 2'], ['undefined', '20']);
   });
 
+  it('use Node.js default modules', () => {
+    return testSimpleTypescript(["path.extname('index.html')"], ["'.html'"]);
+  });
+
   it('define function and call', () => {
     const expressionList = [
       'const sum = (a: number, b: number): number => a + b',

@@ -6,10 +6,12 @@ import * as repl from 'repl';
 import * as vm from 'vm';
 
 import { IRinoreOptions } from '.';
-import { setupContext } from './context';
+import { context as rinoreContext, setupContext } from './context';
 
 let register: { compile(code: string, fileName: string, lineOffset?: number): string; };
 try {
+  delete require.extensions['.ts'];
+  delete require.extensions['.tsx'];
 // tslint:disable-next-line:no-var-requires
   register = require('ts-node').register();
 } catch (error) {/* ignore */}
@@ -81,5 +83,10 @@ export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
   const replServer = repl.start(options);
   setupHistory(replServer, path.join(os.homedir(), '.rinore_history_ts'), 1000);
   setupContext(replServer);
+  for (const key in rinoreContext) {
+    if (rinoreContext.hasOwnProperty(key)) {
+      accumulatedCode.input += `declare var ${key}: any;\n`;
+    }
+  }
   return replServer;
 };

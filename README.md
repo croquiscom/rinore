@@ -9,7 +9,7 @@ or [django shell](https://docs.djangoproject.com/en/1.11/ref/django-admin/#shell
 # Features
 Rinore has following features additional to the original Node.js REPL.
 
-* can select JavaScript or CoffeeScript
+* can select JavaScript or CoffeeScript or TypeScript
 * expose modules to the REPL
 * support Promise
 * show function arguments for Tab completion
@@ -29,6 +29,14 @@ For CoffeeScript:
 ```
 $ rinore -l coffeescript
 rinore> path.extname 'index.html'
+'.html'
+```
+
+For TypeScript:
+
+```
+$ rinore -l typescript
+rinore> path.extname('index.html')
 '.html'
 ```
 
@@ -92,6 +100,16 @@ You can assign the result of Promise to a variable:
 ```
 rinore> result = new Promise(resolve => resolve('done'))
 'done'
+rinore> result.length
+4
+```
+
+If you are using TypeScript, you should use await keyword:
+
+```
+$ rinore -l typescript
+rinore> const result = await new Promise<string>(resolve => resolve('done'))
+undefined
 rinore> result.length
 4
 ```

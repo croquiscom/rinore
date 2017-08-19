@@ -18,7 +18,7 @@
     "prepublish": "npm run lint && npm run build",
     "build": "rimraf lib && tsc -p src/tsconfig.build.json",
     "lint": "tslint -p tsconfig.json",
-    "test": "mocha --compilers ts:ts-node/register"
+    "test": "mocha --compilers ts:ts-node/register -t 5000"
   },
   "bin": {
     "rinore": "./bin/rinore"

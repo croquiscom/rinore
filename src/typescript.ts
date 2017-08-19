@@ -8,7 +8,10 @@ import * as vm from 'vm';
 import { IRinoreOptions } from '.';
 import { context as rinoreContext, modules as rinoreModules, setupContext } from './context';
 
-let register: { compile(code: string, fileName: string, lineOffset?: number): string; };
+let register: {
+  compile(code: string, fileName: string, lineOffset?: number): string,
+  getTypeInfo(code: string, fileName: string, position: number): {name: string, comment: string},
+};
 try {
   delete require.extensions['.ts'];
   delete require.extensions['.tsx'];
@@ -55,6 +58,15 @@ export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
   const options: {[key: string]: any} = {
     eval: function tsEval(cmd: string, context: {[key: string]: any},
                           filename: string, callback: (error?: any, result?: any) => void): void {
+      let assignToKeyword = '';
+      let assignTo = '';
+      let assignToType = 'any';
+      if (/^\s*(const|let)\s+([a-zA-Z_$][0-9a-zA-Z_$]*)\s*=\s*await\s+(.*)/.test(cmd)) {
+        assignToKeyword = RegExp.$1;
+        assignTo = RegExp.$2;
+        // execute the cmd without assignment
+        cmd = `${RegExp.$3}\n`;
+      }
       let jsCode: string;
       try {
         jsCode = register.compile(accumulatedCode.input + cmd, '[eval].ts');
@@ -62,14 +74,37 @@ export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
         callback(error);
         return;
       }
+      if (assignTo) {
+        // get type of resolved result
+        const input = `${accumulatedCode.input}const __rinore = ${cmd}__rinore`;
+        const typeInfo = register.getTypeInfo(input, '[eval].ts', input.length);
+        if (/Promise<(.*)>/.test(typeInfo.name)) {
+          assignToType = RegExp.$1;
+        }
+      }
       try {
         const changes = diffLines(accumulatedCode.output, jsCode);
         const result = changes.reduce((r, change) => {
           return change.added ? vm.runInContext(change.value, context, {filename}) : r;
         }, undefined);
-        accumulatedCode.input += cmd;
-        accumulatedCode.output = jsCode;
-        callback(null, result);
+        Promise.resolve()
+          .then(() => result)
+          .then((resolvedResult) => {
+            accumulatedCode.input += cmd;
+            accumulatedCode.output = jsCode;
+            if (assignTo) {
+              // make the type of assignTo to Type, not Promise<Type>
+              accumulatedCode.input += `declare ${assignToKeyword} ${assignTo}: ${assignToType}\n`;
+              context[assignTo] = resolvedResult;
+              // original result of 'const v = xxx' is undefined, not xxx
+              callback(null, undefined);
+            } else {
+              callback(null, resolvedResult);
+            }
+          })
+          .catch((error) => {
+            callback(error);
+          });
       } catch (error) {
         callback(error);
       }

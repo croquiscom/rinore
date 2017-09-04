@@ -92,5 +92,14 @@ describe('complete', () => {
       const expectedOutput: string[] = ['funcTsArrow \u001b[35mfoo, bar\u001b[39m'];
       return testCompleteCoffeescript(runList, code, expectedResult, expectedOutput);
     });
+
+    it('TypeScript class method', () => {
+      loadModules([`${__dirname}/../samples/ts_class_method:*`], {silent: true});
+      const runList: string[] = ['instance = new TsClass()'];
+      const code = 'instance.method';
+      const expectedResult: [string[], string] = [['instance.method'], 'instance.method'];
+      const expectedOutput: string[] = ['instance.method \u001b[35mfoo, bar\u001b[39m'];
+      return testCompleteCoffeescript(runList, code, expectedResult, expectedOutput);
+    });
   });
 });

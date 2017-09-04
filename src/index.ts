@@ -1,70 +1,11 @@
 import program = require('commander');
-import { camelCase } from 'lodash';
-import path = require('path');
 import * as repl from 'repl';
 
 import { start as startCoffeeScript } from './coffeescript';
 import { start as startJavascript } from './javascript';
 import { start as startTypescript } from './typescript';
 
-import { context as rinoreContext, modules as rinoreModules } from './context';
-
-function splitModuleName(module: string): [string, string] {
-  if (module.lastIndexOf(':') >= 0) {
-    const pos = module.lastIndexOf(':');
-    return [module.substr(0, pos), module.substr(pos + 1)];
-  } else {
-    return [module, ''];
-  }
-}
-
-function loadModule(module: string, name: string) {
-  if (!name) {
-    name = camelCase(path.parse(module).name);
-  }
-  const loaded = require(module);
-  const members: string[] = [];
-  if (name === '*') {
-    for (const key in loaded) {
-      if (loaded.hasOwnProperty(key)) {
-        rinoreContext[key] = loaded[key];
-        members.push(key);
-      }
-    }
-  } else {
-    rinoreContext[name] = loaded;
-  }
-  rinoreModules.push({module, name, members});
-}
-
-function loadModules(modules: string[]) {
-  const cwd = process.cwd();
-  for (let module of modules) {
-    let name = '';
-    [module, name] = splitModuleName(module);
-    if (name) {
-      console.log(`Loading module '${module}' as '${name}'...`);
-    } else {
-      console.log(`Loading module '${module}'...`);
-    }
-    try {
-      // try to load local file first
-      const localPath = path.resolve(cwd, module);
-      loadModule(localPath, name);
-    } catch (error) {
-      if (error.code === 'MODULE_NOT_FOUND') {
-        try {
-          // try to load npm module (local or global)
-          loadModule(module, name);
-        } catch (error) {
-          console.log(error.toString());
-        }
-      } else {
-        console.log(error.toString());
-      }
-    }
-  }
-}
+import { loadModules } from './context';
 
 export const startCLI = () => {
   program
@@ -107,4 +48,4 @@ export const start = (options: IRinoreOptions = {}): repl.REPLServer => {
   }
 };
 
-export { rinoreContext as context };
+export { context } from './context';

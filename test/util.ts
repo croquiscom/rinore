@@ -104,6 +104,77 @@ export function testSpawnCoffeescript(argumentList: string[],
 }
 
 export function testSpawnTypescript(argumentList: string[],
-  expressionList: string[], expectedList: string[]): Promise<void> {
-return testSpawn('typescript', argumentList, expressionList, expectedList);
+        expressionList: string[], expectedList: string[]): Promise<void> {
+  return testSpawn('typescript', argumentList, expressionList, expectedList);
+}
+
+function testComplete(language: string, runList: string[], code: string,
+        expectedResult: [string[], string], expectedOutput: string[]) {
+  let waitOutputResolve: () => void;
+  const waitOutput = new Promise<void>((resolve, reject) => {
+    waitOutputResolve = resolve;
+  });
+
+  const input = new stream.Readable({
+    read(size) {
+      // nothing to do
+    },
+  });
+
+  const logs: string[] = [];
+  const output = new stream.Writable({
+    objectMode: true,
+    write(chunk: string, encoding, callback) {
+      if (chunk === 'rinore> ') {
+        if (runList.length > 0) {
+          input.push(runList.shift() + '\n');
+        } else {
+          input.push(null);
+          waitOutputResolve();
+        }
+      } else {
+        if (chunk.trim()) {
+          logs.push(chunk.trim());
+        }
+      }
+      callback();
+    },
+  });
+
+  const repl = rinore.start({
+    input,
+    language,
+    output,
+  });
+  return waitOutput
+    .then(() => {
+      logs.length = 0; // ignore logs by runList
+      return new Promise((resolve, reject) => {
+        (repl as any).complete(code, (error: Error, result: [string[], string]) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        });
+      });
+    }).then((result) => {
+      expect(result).to.eql(expectedResult);
+      expect(logs).to.eql(expectedOutput);
+    });
+}
+
+export function testCompleteJavascript(runList: string[], code: string,
+        expectedResult: [string[], string], expectedOutput: string[]) {
+  return testComplete('javascript', runList, code, expectedResult, expectedOutput);
+}
+
+export function testCompleteCoffeescript(runList: string[], code: string,
+        expectedResult: [string[], string], expectedOutput: string[]) {
+  return testComplete('coffeescript', runList, code, expectedResult, expectedOutput);
+}
+
+export function testCompleteTypescript(runList: string[], code: string,
+  expectedResult: [string[], string], expectedOutput: string[]) {
+    return testComplete('typescript', runList, code, expectedResult, expectedOutput);
 }

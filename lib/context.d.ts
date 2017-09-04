@@ -8,5 +8,8 @@ export declare const modules: Array<{
     name: string;
     members: string[];
 }>;
-export declare function loadModules(modulesToLoad: string[]): void;
+export declare function loadModules(modulesToLoad: string[], options?: {
+    silent: boolean;
+}): void;
 export declare function setupContext(replServer: repl.REPLServer): void;
+export declare function clearContext(): void;

@@ -33,15 +33,17 @@ function loadModule(moduleToLoad: string, name: string) {
   modules.push({module: moduleToLoad, name, members});
 }
 
-export function loadModules(modulesToLoad: string[]) {
+export function loadModules(modulesToLoad: string[], options = {silent: false}) {
   const cwd = process.cwd();
   for (let moduleToLoad of modulesToLoad) {
     let name = '';
     [moduleToLoad, name] = splitModuleName(moduleToLoad);
-    if (name) {
-      console.log(`Loading module '${moduleToLoad}' as '${name}'...`);
-    } else {
-      console.log(`Loading module '${moduleToLoad}'...`);
+    if (!options.silent) {
+      if (name) {
+        console.log(`Loading module '${moduleToLoad}' as '${name}'...`);
+      } else {
+        console.log(`Loading module '${moduleToLoad}'...`);
+      }
     }
     try {
       // try to load local file first
@@ -68,4 +70,11 @@ export function setupContext(replServer: repl.REPLServer) {
       replServer.context[key] = context[key];
     }
   }
+}
+
+export function clearContext() {
+  for (const key of Object.keys(context)) {
+    delete context[key];
+  }
+  modules.length = 0;
 }

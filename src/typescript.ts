@@ -57,10 +57,11 @@ function setupHistory(replServer: repl.REPLServer, historyFile: string, historyS
 function createTsEval(accumulatedCode: { input: string, output: string}) {
   return function tsEval(cmd: string, context: {[key: string]: any},
           filename: string, callback: (error?: any, result?: any) => void): void {
+    const isReplComplete = filename === 'repl_complete';
     let assignToKeyword = '';
     let assignTo = '';
     let assignToType = 'any';
-    if (/^\s*(const|let)\s+([a-zA-Z_$][0-9a-zA-Z_$]*)\s*=\s*await\s+(.*)/.test(cmd)) {
+    if (!isReplComplete && /^\s*(const|let)\s+([a-zA-Z_$][0-9a-zA-Z_$]*)\s*=\s*await\s+(.*)/.test(cmd)) {
       assignToKeyword = RegExp.$1;
       assignTo = RegExp.$2;
       // execute the cmd without assignment
@@ -89,8 +90,10 @@ function createTsEval(accumulatedCode: { input: string, output: string}) {
       Promise.resolve()
         .then(() => result)
         .then((resolvedResult) => {
-          accumulatedCode.input += cmd;
-          accumulatedCode.output = jsCode;
+          if (!isReplComplete) {
+            accumulatedCode.input += cmd;
+            accumulatedCode.output = jsCode;
+          }
           if (assignTo) {
             // make the type of assignTo to Type, not Promise<Type>
             accumulatedCode.input += `declare ${assignToKeyword} ${assignTo}: ${assignToType}\n`;
@@ -133,7 +136,7 @@ function replaceCompleter(replServer: any) {
         callback(error, result);
         return;
       }
-      replServer.eval(line, replServer.context, 'repl', (e?: any, object?: any) => {
+      replServer.eval(line, replServer.context, 'repl_complete', (e?: any, object?: any) => {
         if (typeof(object) === 'function') {
           const argsMatch = object.toString().match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)
               || object.toString().match(/^[^\(]*\(\s*([^\)]*)\)/m);

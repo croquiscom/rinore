@@ -54,78 +54,63 @@ function setupHistory(replServer: repl.REPLServer, historyFile: string, historyS
   });
 }
 
-export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
-  if (!register) {
-    throw new Error('Please install ts-node module');
-  }
-  const accumulatedCode = {
-    input: '',
-    output: '"use strict";\n',
+function createTsEval(accumulatedCode: { input: string, output: string}) {
+  return function tsEval(cmd: string, context: {[key: string]: any},
+          filename: string, callback: (error?: any, result?: any) => void): void {
+    let assignToKeyword = '';
+    let assignTo = '';
+    let assignToType = 'any';
+    if (/^\s*(const|let)\s+([a-zA-Z_$][0-9a-zA-Z_$]*)\s*=\s*await\s+(.*)/.test(cmd)) {
+      assignToKeyword = RegExp.$1;
+      assignTo = RegExp.$2;
+      // execute the cmd without assignment
+      cmd = `${RegExp.$3}\n`;
+    }
+    let jsCode: string;
+    try {
+      jsCode = register.compile(accumulatedCode.input + cmd, '[eval].ts');
+    } catch (error) {
+      callback(error);
+      return;
+    }
+    if (assignTo) {
+      // get type of resolved result
+      const input = `${accumulatedCode.input}const __rinore = ${cmd}__rinore`;
+      const typeInfo = register.getTypeInfo(input, '[eval].ts', input.length);
+      if (/Promise<(.*)>/.test(typeInfo.name)) {
+        assignToType = RegExp.$1;
+      }
+    }
+    try {
+      const changes = diffLines(accumulatedCode.output, jsCode);
+      const result = changes.reduce((r, change) => {
+        return change.added ? vm.runInContext(change.value, context, {filename}) : r;
+      }, undefined);
+      Promise.resolve()
+        .then(() => result)
+        .then((resolvedResult) => {
+          accumulatedCode.input += cmd;
+          accumulatedCode.output = jsCode;
+          if (assignTo) {
+            // make the type of assignTo to Type, not Promise<Type>
+            accumulatedCode.input += `declare ${assignToKeyword} ${assignTo}: ${assignToType}\n`;
+            context[assignTo] = resolvedResult;
+            // original result of 'const v = xxx' is undefined, not xxx
+            callback(null, undefined);
+          } else {
+            callback(null, resolvedResult);
+          }
+        })
+        .catch((error) => {
+          callback(error);
+        });
+    } catch (error) {
+      callback(error);
+    }
   };
-  const options: {[key: string]: any} = {
-    eval: function tsEval(cmd: string, context: {[key: string]: any},
-                          filename: string, callback: (error?: any, result?: any) => void): void {
-      let assignToKeyword = '';
-      let assignTo = '';
-      let assignToType = 'any';
-      if (/^\s*(const|let)\s+([a-zA-Z_$][0-9a-zA-Z_$]*)\s*=\s*await\s+(.*)/.test(cmd)) {
-        assignToKeyword = RegExp.$1;
-        assignTo = RegExp.$2;
-        // execute the cmd without assignment
-        cmd = `${RegExp.$3}\n`;
-      }
-      let jsCode: string;
-      try {
-        jsCode = register.compile(accumulatedCode.input + cmd, '[eval].ts');
-      } catch (error) {
-        callback(error);
-        return;
-      }
-      if (assignTo) {
-        // get type of resolved result
-        const input = `${accumulatedCode.input}const __rinore = ${cmd}__rinore`;
-        const typeInfo = register.getTypeInfo(input, '[eval].ts', input.length);
-        if (/Promise<(.*)>/.test(typeInfo.name)) {
-          assignToType = RegExp.$1;
-        }
-      }
-      try {
-        const changes = diffLines(accumulatedCode.output, jsCode);
-        const result = changes.reduce((r, change) => {
-          return change.added ? vm.runInContext(change.value, context, {filename}) : r;
-        }, undefined);
-        Promise.resolve()
-          .then(() => result)
-          .then((resolvedResult) => {
-            accumulatedCode.input += cmd;
-            accumulatedCode.output = jsCode;
-            if (assignTo) {
-              // make the type of assignTo to Type, not Promise<Type>
-              accumulatedCode.input += `declare ${assignToKeyword} ${assignTo}: ${assignToType}\n`;
-              context[assignTo] = resolvedResult;
-              // original result of 'const v = xxx' is undefined, not xxx
-              callback(null, undefined);
-            } else {
-              callback(null, resolvedResult);
-            }
-          })
-          .catch((error) => {
-            callback(error);
-          });
-      } catch (error) {
-        callback(error);
-      }
-    },
-    historySize: 1000,
-    input: rinoreOptions.input,
-    output: rinoreOptions.output,
-    prompt: rinoreOptions.prompt || 'rinore> ',
-    terminal: rinoreOptions.terminal,
-  };
-  const replServer = repl.start(options);
-  setupHistory(replServer, path.join(os.homedir(), '.rinore_history_ts'), 1000);
-  setupContext(replServer);
-  vm.runInContext('exports = module.exports', replServer.context);
+}
+
+function setupAccumulatedCodeInput(accumulatedCode: { input: string, output: string}) {
   const imported: string[] = [];
   for (const module of nodeModules) {
     accumulatedCode.input += `import * as ${module} from '${module}'\n`;
@@ -148,5 +133,28 @@ export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
   }
   // hack: import makes that first const statement returns {} instead of undefined
   accumulatedCode.input += 'void 0\n';
+}
+
+export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
+  if (!register) {
+    throw new Error('Please install ts-node module');
+  }
+  const accumulatedCode = {
+    input: '',
+    output: '"use strict";\n',
+  };
+  const options: {[key: string]: any} = {
+    eval: createTsEval(accumulatedCode),
+    historySize: 1000,
+    input: rinoreOptions.input,
+    output: rinoreOptions.output,
+    prompt: rinoreOptions.prompt || 'rinore> ',
+    terminal: rinoreOptions.terminal,
+  };
+  const replServer = repl.start(options);
+  setupHistory(replServer, path.join(os.homedir(), '.rinore_history_ts'), 1000);
+  setupContext(replServer);
+  setupAccumulatedCodeInput(accumulatedCode);
+  vm.runInContext('exports = module.exports', replServer.context);
   return replServer;
 };

@@ -139,6 +139,22 @@ rinore> console.log(url.parse(<Tab>
 url.parse(url, parseQueryString, slashesDenoteHost)
 ```
 
+## package.json
+
+You can specify CLI arguments in the package.json
+
+```
+{
+  "rinore": {
+    "language": "coffeescript",
+    "require": [
+      "bluebird:Promise",
+      "lodash"
+    ]
+  }
+}
+```
+
 # Inspiration
 
 To find best REPL experience, Rinore has referred some projects:

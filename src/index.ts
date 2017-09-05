@@ -18,6 +18,7 @@ export const startCLI = () => {
       array: true,
       description: 'preload the given module',
     })
+    .pkgConf('rinore')
     .argv;
 
   loadModules(argv.require as string[]);

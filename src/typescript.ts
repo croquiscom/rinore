@@ -110,6 +110,43 @@ function createTsEval(accumulatedCode: { input: string, output: string}) {
   };
 }
 
+function replaceCompleter(replServer: any) {
+  const originalCompleter = replServer.completer;
+  replServer.completer = (line: string, callback: (error?: any, result?: any) => void) => {
+    originalCompleter(line, (error?: any, result?: any) => {
+      line = line.replace(/\(\s*$/, '');
+      let showArgs = true;
+      if (error || !result[0]) {
+        // something wrong
+        showArgs = false;
+      } else if (result[0].length > 1) {
+        // more than one candidate
+        showArgs = false;
+      } else if (result[0].length === 1 && result[0][0] !== result[1]) {
+        // one candidate but need to be completed automatically
+        showArgs = false;
+      } else if (!/^[A-Za-z0-9_.]+\s*$/.test(line)) {
+        // support only for simple case
+        showArgs = false;
+      }
+      if (!showArgs) {
+        callback(error, result);
+        return;
+      }
+      replServer.eval(line, replServer.context, 'repl', (e?: any, object?: any) => {
+        if (typeof(object) === 'function') {
+          const argsMatch = object.toString().match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)
+              || object.toString().match(/^[^\(]*\(\s*([^\)]*)\)/m);
+          replServer.output.write(os.EOL);
+          replServer.output.write(`${line.trim()}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
+          replServer._refreshLine();
+        }
+        callback(error, result);
+      });
+    });
+  };
+}
+
 function setupAccumulatedCodeInput(accumulatedCode: { input: string, output: string}) {
   const imported: string[] = [];
   for (const module of nodeModules) {
@@ -154,6 +191,7 @@ export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
   const replServer = repl.start(options);
   setupHistory(replServer, path.join(os.homedir(), '.rinore_history_ts'), 1000);
   setupContext(replServer);
+  replaceCompleter(replServer);
   setupAccumulatedCodeInput(accumulatedCode);
   vm.runInContext('exports = module.exports', replServer.context);
   return replServer;

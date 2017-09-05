@@ -128,20 +128,17 @@ function replaceCompleter(replServer: any) {
       } else if (result[0].length === 1 && result[0][0] !== result[1]) {
         // one candidate but need to be completed automatically
         showArgs = false;
-      } else if (!/^[A-Za-z0-9_.]+\s*$/.test(line)) {
-        // support only for simple case
-        showArgs = false;
       }
       if (!showArgs) {
         callback(error, result);
         return;
       }
-      replServer.eval(line, replServer.context, 'repl_complete', (e?: any, object?: any) => {
+      replServer.eval(result[1], replServer.context, 'repl_complete', (e?: any, object?: any) => {
         if (typeof(object) === 'function') {
           const argsMatch = object.toString().match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)
               || object.toString().match(/^[^\(]*\(\s*([^\)]*)\)/m);
           replServer.output.write(os.EOL);
-          replServer.output.write(`${line.trim()}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
+          replServer.output.write(`${result[1]}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
           replServer._refreshLine();
         }
         callback(error, result);

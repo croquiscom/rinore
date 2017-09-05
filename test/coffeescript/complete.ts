@@ -110,5 +110,14 @@ describe('complete', () => {
       const expectedOutput: string[] = ['funcJsDecl \u001b[35mfoo, bar\u001b[39m'];
       return testCompleteCoffeescript(runList, code, expectedResult, expectedOutput);
     });
+
+    it('inside expression', () => {
+      loadModules([`${__dirname}/../samples/js_func_decl:*`], {silent: true});
+      const runList: string[] = [];
+      const code = 'console.log funcJsDecl';
+      const expectedResult: [string[], string] = [['funcJsDecl'], 'funcJsDecl'];
+      const expectedOutput: string[] = ['funcJsDecl \u001b[35mfoo, bar\u001b[39m'];
+      return testCompleteCoffeescript(runList, code, expectedResult, expectedOutput);
+    });
   });
 });

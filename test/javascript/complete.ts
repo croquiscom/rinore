@@ -101,5 +101,14 @@ describe('complete', () => {
       const expectedOutput: string[] = ['instance.method(\u001b[35mfoo, bar\u001b[39m)'];
       return testCompleteJavascript(runList, code, expectedResult, expectedOutput);
     });
+
+    it('with open parentheses', () => {
+      loadModules([`${__dirname}/../samples/js_func_decl:*`], {silent: true});
+      const runList: string[] = [];
+      const code = 'funcJsDecl(';
+      const expectedResult: [string[], string] = [['funcJsDecl'], 'funcJsDecl'];
+      const expectedOutput: string[] = ['funcJsDecl(\u001b[35mfoo, bar\u001b[39m)'];
+      return testCompleteJavascript(runList, code, expectedResult, expectedOutput);
+    });
   });
 });

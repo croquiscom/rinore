@@ -116,8 +116,8 @@ function createTsEval(accumulatedCode: { input: string, output: string}) {
 function replaceCompleter(replServer: any) {
   const originalCompleter = replServer.completer;
   replServer.completer = (line: string, callback: (error?: any, result?: any) => void) => {
+    line = line.replace(/\(\s*$/, '');
     originalCompleter(line, (error?: any, result?: any) => {
-      line = line.replace(/\(\s*$/, '');
       let showArgs = true;
       if (error || !result[0]) {
         // something wrong

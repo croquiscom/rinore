@@ -86,7 +86,8 @@ function replaceCompleter(replServer: any) {
         callback(error, result);
         return;
       }
-      replServer.eval(line, replServer.context, 'repl', (e?: any, object?: any) => {
+      const expr = `try { ${line} } catch (e) {}`;
+      replServer.eval(expr, replServer.context, 'repl', (e?: any, object?: any) => {
         if (typeof(object) === 'function') {
           const argsMatch = object.toString().match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)
               || object.toString().match(/^[^\(]*\(\s*([^\)]*)\)/m);

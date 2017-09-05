@@ -156,6 +156,13 @@ function setupAccumulatedCodeInput(accumulatedCode: { input: string, output: str
     accumulatedCode.input += `import * as ${module} from '${module}'\n`;
   }
   for (const module of rinoreModules) {
+    try {
+      const importExpr = `import * as _test from '${module.module}'\n`;
+      register.compile(accumulatedCode.input + importExpr, '[eval].ts');
+    } catch (error) {
+      // if import statement fails, skip to declare
+      continue;
+    }
     if (module.name === '*') {
       imported.push.apply(imported, module.members);
       accumulatedCode.input += `import {${module.members.join(',')}} from '${module.module}'\n`;

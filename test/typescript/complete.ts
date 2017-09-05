@@ -30,7 +30,7 @@ describe('complete', () => {
       clearContext();
     });
 
-    it.skip('JavaScript function declaration', () => {
+    it('JavaScript function declaration', () => {
       loadModules([`${__dirname}/../samples/js_func_decl:*`], {silent: true});
       const runList: string[] = [];
       const code = 'funcJsDecl';
@@ -39,7 +39,7 @@ describe('complete', () => {
       return testCompleteTypescript(runList, code, expectedResult, expectedOutput);
     });
 
-    it.skip('JavaScript function expression', () => {
+    it('JavaScript function expression', () => {
       loadModules([`${__dirname}/../samples/js_func_expr:*`], {silent: true});
       const runList: string[] = [];
       const code = 'funcJsExpr';
@@ -48,7 +48,7 @@ describe('complete', () => {
       return testCompleteTypescript(runList, code, expectedResult, expectedOutput);
     });
 
-    it.skip('JavaScript arrow function', () => {
+    it('JavaScript arrow function', () => {
       loadModules([`${__dirname}/../samples/js_func_arrow:*`], {silent: true});
       const runList: string[] = [];
       const code = 'funcJsArrow';
@@ -57,7 +57,7 @@ describe('complete', () => {
       return testCompleteTypescript(runList, code, expectedResult, expectedOutput);
     });
 
-    it.skip('CoffeeScript function', () => {
+    it('CoffeeScript function', () => {
       loadModules([`${__dirname}/../samples/coffee_func:*`], {silent: true});
       const runList: string[] = [];
       const code = 'funcCoffee';

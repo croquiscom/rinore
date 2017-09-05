@@ -14,7 +14,7 @@ describe('require', () => {
   });
 
   it('specify an another name', () => {
-    const argumentList = ['-l', 'coffeescript', '-r', 'lodash:l'];
+    const argumentList = ['-r', 'lodash:l'];
     const expressionList = [
       'l([1, 2, 3]).map((v) -> v * 2).reverse().value()',
     ];

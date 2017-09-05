@@ -29,6 +29,7 @@
     "bluebird": "^3.5.0",
     "diff": "^3.3.0",
     "lodash": "^4.17.4",
+    "node-watch": "^0.5.5",
     "yargs": "^8.0.2"
   },
   "devDependencies": {

@@ -13,6 +13,7 @@ Rinore has following features additional to the original Node.js REPL.
 * expose modules to the REPL
 * support Promise
 * show function arguments for Tab completion
+* reload local module if its content is changed
 
 # Usages
 

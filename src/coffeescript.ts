@@ -45,7 +45,7 @@ function replaceEval(replServer: any) {
 function replaceCompleter(replServer: any) {
   const originalCompleter = replServer.completer;
   replServer.completer = (line: string, callback: (error?: any, result?: any) => void) => {
-    line = line.replace(/\(\s*$/, '');
+    line = line.replace(/\(\s*$/, '').trim();
     originalCompleter(line, (error?: any, result?: any) => {
       let showArgs = true;
       if (error || !result[0]) {

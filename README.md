@@ -128,6 +128,17 @@ rinore> add(1, 2)
 3
 ```
 
+## Show function arguments
+
+Rinore shows function arguments when Tab is pressed.
+
+```
+rinore> util.inspect<Tab>
+util.inspect(obj, opts)
+rinore> console.log(url.parse(<Tab>
+url.parse(url, parseQueryString, slashesDenoteHost)
+```
+
 # Inspiration
 
 To find best REPL experience, Rinore has referred some projects:

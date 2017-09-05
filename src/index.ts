@@ -1,5 +1,5 @@
-import program = require('commander');
 import * as repl from 'repl';
+import * as yargs from 'yargs';
 
 import { start as startCoffeeScript } from './coffeescript';
 import { start as startJavascript } from './javascript';
@@ -8,20 +8,21 @@ import { start as startTypescript } from './typescript';
 import { loadModules } from './context';
 
 export const startCLI = () => {
-  program
-    .option('-l, --language <language>',
-            'REPL language. javascript or coffeescript or typescript. The default is javascript')
-    .option('-r, --require <module>',
-            'preload the given module',
-            (value: string, list: string[]): string[] => {
-              list.push(value);
-              return list;
-            }, [])
-    .parse(process.argv);
+  const argv = yargs
+    .option('l', {
+      alias: 'language',
+      description: 'REPL language. javascript or coffeescript or typescript. The default is javascript',
+    })
+    .option('r', {
+      alias: 'require',
+      array: true,
+      description: 'preload the given module',
+    })
+    .argv;
 
-  loadModules(program.require as string[]);
+  loadModules(argv.require as string[]);
 
-  start({language: program.language})
+  start({language: argv.language as string})
   .on('exit', () => {
     // exit CLI process even if there are scheduled works
     setImmediate(() => {

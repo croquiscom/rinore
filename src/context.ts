@@ -1,5 +1,5 @@
 import { camelCase } from 'lodash';
-import path = require('path');
+import * as path from 'path';
 import * as repl from 'repl';
 
 export const context: {[key: string]: any} = {};

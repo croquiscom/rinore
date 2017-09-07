@@ -21,7 +21,7 @@ export const startCLI = () => {
     .pkgConf('rinore')
     .argv;
 
-  loadModules(argv.require as string[]);
+  loadModules((argv.require as string[]) || []);
 
   start({language: argv.language as string})
   .on('exit', () => {

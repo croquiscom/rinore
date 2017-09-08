@@ -19,7 +19,8 @@
     "build": "rimraf lib && tsc -p src/tsconfig.build.json",
     "lint": "tslint -p tsconfig.json",
     "test": "mocha --compilers ts:ts-node/register -t 5000",
-    "test:cov": "nyc npm run test"
+    "test:cov": "nyc npm run test",
+    "test:coveralls": "npm run test:cov && cat coverage/lcov.info | coveralls"
   },
   "bin": {
     "rinore": "./bin/rinore"
@@ -43,6 +44,7 @@
     "@types/yargs": "^8.0.2",
     "chai": "^4.1.1",
     "coffee-script": "^1.12.7",
+    "coveralls": "^2.13.1",
     "mocha": "^3.5.0",
     "nyc": "^11.2.1",
     "rimraf": "^2.6.1",
@@ -55,7 +57,7 @@
       ".ts"
     ],
     "reporter": [
-      "html"
+      "lcov"
     ]
   }
 }

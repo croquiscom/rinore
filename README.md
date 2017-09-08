@@ -1,3 +1,6 @@
+[![npm version](https://badge.fury.io/js/rinore.svg)](https://badge.fury.io/js/rinore)
+[![Build Status](https://travis-ci.org/croquiscom/rinore.svg?branch=master)](https://travis-ci.org/croquiscom/rinore)
+
 # Rinore
 > **Ri**ch **No**de.js **RE**PL
 

@@ -1,2 +1,7 @@
 #!/usr/bin/env node
-require('../lib').startCLI();
+if (process.env.NODE_ENV === 'test') {
+  require('ts-node/register');
+  require('../src').startCLI();
+} else {
+  require('../lib').startCLI();
+}

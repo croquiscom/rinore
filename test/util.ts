@@ -67,6 +67,7 @@ function testSpawn(language: string, argumentList: string[],
   const logs: string[] = [];
   const child = spawn(`${__dirname}/../bin/rinore`, argumentList, {
     cwd: `${__dirname}/${language}`,
+    env: Object.assign({}, process.env, {NODE_ENV: 'test'}),
   });
   child.stdout.setEncoding('utf8');
   child.stdout.on('data', (data: string) => {

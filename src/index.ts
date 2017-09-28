@@ -18,6 +18,9 @@ export const startCLI = () => {
       array: true,
       description: 'preload the given module',
     })
+    .option('prompt', {
+      description: 'set prompt',
+    })
     .option('historyFile', {
       description: 'the name of the history file',
     })
@@ -31,6 +34,7 @@ export const startCLI = () => {
   start({
     historyFile: argv.historyFile as string,
     language: argv.language as string,
+    prompt: argv.prompt as string,
   })
   .on('exit', () => {
     // exit CLI process even if there are scheduled works

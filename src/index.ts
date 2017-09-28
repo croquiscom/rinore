@@ -18,6 +18,8 @@ export const startCLI = () => {
       array: true,
       description: 'preload the given module',
     })
+    .help('help')
+    .alias('h', 'help')
     .pkgConf('rinore')
     .argv;
 

@@ -140,5 +140,40 @@ describe('complete', () => {
         return testCompleteTypescript(runList, code, expectedResult, expectedOutput);
       });
     });
+
+    describe('undetermined by longer name', () => {
+      beforeEach(() => {
+        clearContext();
+      });
+
+      afterEach(() => {
+        clearContext();
+      });
+
+      it('no character at the end', () => {
+        const runList: string[] = [];
+        const code = 'fs.readFile';
+        const expectedResult: [string[], string] = [['fs.readFile', 'fs.readFileSync'], 'fs.readFile'];
+        const expectedOutput: string[] = [];
+        return testCompleteTypescript(runList, code, expectedResult, expectedOutput);
+      });
+
+      it('with open parentheses', () => {
+        const runList: string[] = [];
+        const code = 'fs.readFile(';
+        const expectedResult: [string[], string] = [['fs.readFile'], 'fs.readFile'];
+        const expectedOutput: string[] = ['fs.readFile(\u001b[35mpath, options, callback_\u001b[39m)'];
+        return testCompleteTypescript(runList, code, expectedResult, expectedOutput);
+      });
+
+      it('with extra space', () => {
+        loadModules([`${__dirname}/../samples/js_func_decl:*`], {silent: true});
+        const runList: string[] = [];
+        const code = 'fs.readFile ';
+        const expectedResult: [string[], string] = [['fs.readFile'], 'fs.readFile'];
+        const expectedOutput: string[] = ['fs.readFile(\u001b[35mpath, options, callback_\u001b[39m)'];
+        return testCompleteTypescript(runList, code, expectedResult, expectedOutput);
+      });
+    });
   });
 });

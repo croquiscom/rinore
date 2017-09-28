@@ -66,20 +66,21 @@ function replaceEval(replServer: any) {
 function replaceCompleter(replServer: any) {
   const originalCompleter = replServer.completer;
   replServer.completer = (line: string, callback: (error?: any, result?: any) => void) => {
+    const hasExtraChars = /(?:\(|\s)/.test(line);
     line = line.replace(/\(\s*$/, '').trim();
     originalCompleter(line, (error?: any, result?: any) => {
-      let showArgs = true;
       if (error || !result[0]) {
         // something wrong
-        showArgs = false;
-      } else if (result[0].length > 1) {
-        // more than one candidate
-        showArgs = false;
-      } else if (result[0].length === 1 && result[0][0] !== result[1]) {
-        // one candidate but need to be completed automatically
-        showArgs = false;
+        callback(error, result);
+        return;
       }
-      if (!showArgs) {
+      if (!result[0].some((item: any) => item === result[1])) {
+        // not completed yet
+        callback(error, result);
+        return;
+      }
+      if (!(result[0].length === 1 || hasExtraChars)) {
+        // must have only one complete result or extra chars at the end
         callback(error, result);
         return;
       }
@@ -92,7 +93,7 @@ function replaceCompleter(replServer: any) {
           replServer.output.write(`${result[1]}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
           replServer._refreshLine();
         }
-        callback(error, result);
+        callback(error, [[result[1]], result[1]]);
       });
     });
   };

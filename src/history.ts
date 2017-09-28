@@ -1,8 +1,10 @@
 import * as fs from 'fs';
 import * as os from 'os';
+import * as path from 'path';
 import * as repl from 'repl';
 
 export function setupHistory(replServer: repl.REPLServer, historyFile: string, historySize: number) {
+  historyFile = path.join(os.homedir(), historyFile);
   try {
     const data = fs.readFileSync(historyFile, 'utf8');
     if (data) {

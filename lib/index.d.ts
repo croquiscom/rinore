@@ -7,6 +7,7 @@ export interface IRinoreOptions {
     input?: NodeJS.ReadableStream;
     output?: NodeJS.WritableStream;
     terminal?: boolean;
+    historyFile?: string;
 }
 export declare const start: (options?: IRinoreOptions) => repl.REPLServer;
 export { context } from './context';

@@ -18,6 +18,9 @@ export const startCLI = () => {
       array: true,
       description: 'preload the given module',
     })
+    .option('historyFile', {
+      description: 'the name of the history file',
+    })
     .help('help')
     .alias('h', 'help')
     .pkgConf('rinore')
@@ -25,7 +28,10 @@ export const startCLI = () => {
 
   loadModules((argv.require as string[]) || []);
 
-  start({language: argv.language as string})
+  start({
+    historyFile: argv.historyFile as string,
+    language: argv.language as string,
+  })
   .on('exit', () => {
     // exit CLI process even if there are scheduled works
     setImmediate(() => {
@@ -40,6 +46,7 @@ export interface IRinoreOptions {
   input?: NodeJS.ReadableStream;
   output?: NodeJS.WritableStream;
   terminal?: boolean;
+  historyFile?: string;
 }
 
 export const start = (options: IRinoreOptions = {}): repl.REPLServer => {

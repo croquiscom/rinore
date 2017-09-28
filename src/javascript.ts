@@ -1,6 +1,5 @@
 import * as Promise from 'bluebird';
 import * as os from 'os';
-import * as path from 'path';
 import * as repl from 'repl';
 
 import { IRinoreOptions } from '.';
@@ -80,7 +79,7 @@ export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
     terminal: rinoreOptions.terminal,
   };
   const replServer = repl.start(options);
-  setupHistory(replServer, path.join(os.homedir(), '.rinore_history_js'), 1000);
+  setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_js', 1000);
   setupContext(replServer);
   replaceEval(replServer);
   replaceCompleter(replServer);

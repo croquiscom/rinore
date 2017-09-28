@@ -1,4 +1,4 @@
-import { testSimpleJavascript } from '../util';
+import { testSimpleJavascript as testSimple } from '../util';
 
 describe('promise', () => {
   it('wait Promise resolve', () => {
@@ -8,7 +8,7 @@ describe('promise', () => {
     const expectedList = [
       "'done'",
     ];
-    return testSimpleJavascript(expressionList, expectedList);
+    return testSimple(expressionList, expectedList);
   });
 
   it('set the resolved value to the variable', () => {
@@ -20,6 +20,6 @@ describe('promise', () => {
       "'done'",
       '4',
     ];
-    return testSimpleJavascript(expressionList, expectedList);
+    return testSimple(expressionList, expectedList);
   });
 });

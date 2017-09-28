@@ -1,4 +1,4 @@
-import { testSpawnJavascript } from '../util';
+import { testSpawnJavascript as testSpawn } from '../util';
 
 describe('require', () => {
   it('use required module', () => {
@@ -10,7 +10,7 @@ describe('require', () => {
       "Loading module 'lodash'...",
       '[ 6, 4, 2 ]',
     ];
-    return testSpawnJavascript(argumentList, expressionList, expectedList);
+    return testSpawn(argumentList, expressionList, expectedList);
   });
 
   it('specify an another name', () => {
@@ -22,7 +22,7 @@ describe('require', () => {
       "Loading module 'lodash' as 'l'...",
       '[ 6, 4, 2 ]',
     ];
-    return testSpawnJavascript(argumentList, expressionList, expectedList);
+    return testSpawn(argumentList, expressionList, expectedList);
   });
 
   it('require an own file', () => {
@@ -36,7 +36,7 @@ describe('require', () => {
       '3',
       '7',
     ];
-    return testSpawnJavascript(argumentList, expressionList, expectedList);
+    return testSpawn(argumentList, expressionList, expectedList);
   });
 
   it('expose objects as global', () => {
@@ -50,7 +50,7 @@ describe('require', () => {
       '3',
       '7',
     ];
-    return testSpawnJavascript(argumentList, expressionList, expectedList);
+    return testSpawn(argumentList, expressionList, expectedList);
   });
 
   it('rinore.context', () => {
@@ -62,6 +62,6 @@ describe('require', () => {
       "Loading module 'samples/math_utils'...",
       '21',
     ];
-    return testSpawnJavascript(argumentList, expressionList, expectedList);
+    return testSpawn(argumentList, expressionList, expectedList);
   });
 });

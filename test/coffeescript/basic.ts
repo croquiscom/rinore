@@ -1,16 +1,16 @@
-import { testSimpleCoffeescript } from '../util';
+import { testSimpleCoffeescript as testSimple } from '../util';
 
 describe('basic', () => {
   it('simple expression', () => {
-    return testSimpleCoffeescript(['1+2'], ['3']);
+    return testSimple(['1+2'], ['3']);
   });
 
   it('multiple statement', () => {
-    return testSimpleCoffeescript(['a = 10', 'a * 2'], ['10', '20']);
+    return testSimple(['a = 10', 'a * 2'], ['10', '20']);
   });
 
   it('use Node.js default modules', () => {
-    return testSimpleCoffeescript(["path.extname 'index.html'"], ["'.html'"]);
+    return testSimple(["path.extname 'index.html'"], ["'.html'"]);
   });
 
   it('define function and call', () => {
@@ -22,6 +22,6 @@ describe('basic', () => {
       '[Function: sum]',
       '11',
     ];
-    return testSimpleCoffeescript(expressionList, expectedList);
+    return testSimple(expressionList, expectedList);
   });
 });

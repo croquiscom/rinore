@@ -1,16 +1,16 @@
-import { testSimpleTypescript } from '../util';
+import { testSimpleTypescript as testSimple } from '../util';
 
 describe('basic', () => {
   it('simple expression', () => {
-    return testSimpleTypescript(['1+2'], ['3']);
+    return testSimple(['1+2'], ['3']);
   });
 
   it('multiple statement', () => {
-    return testSimpleTypescript(['const a: number = 10', 'a * 2'], ['undefined', '20']);
+    return testSimple(['const a: number = 10', 'a * 2'], ['undefined', '20']);
   });
 
   it('use Node.js default modules', () => {
-    return testSimpleTypescript(["path.extname('index.html')"], ["'.html'"]);
+    return testSimple(["path.extname('index.html')"], ["'.html'"]);
   });
 
   it('define function and call', () => {
@@ -22,6 +22,6 @@ describe('basic', () => {
       'undefined',
       '11',
     ];
-    return testSimpleTypescript(expressionList, expectedList);
+    return testSimple(expressionList, expectedList);
   });
 });

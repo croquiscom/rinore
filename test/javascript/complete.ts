@@ -162,7 +162,10 @@ describe('complete', () => {
         const runList: string[] = [];
         const code = 'fs.readFile(';
         const expectedResult: [string[], string] = [['fs.readFile'], 'fs.readFile'];
-        const expectedOutput: string[] = ['fs.readFile(\u001b[35mpath, options, callback_\u001b[39m)'];
+        const expectedOutput: string[] = ['fs.readFile(\u001b[35mpath, options, callback\u001b[39m)'];
+        if (process.version.startsWith('v6.')) {
+          expectedOutput[0] = expectedOutput[0].replace('callback', 'callback_');
+        }
         return testComplete(runList, code, expectedResult, expectedOutput);
       });
 
@@ -171,7 +174,10 @@ describe('complete', () => {
         const runList: string[] = [];
         const code = 'fs.readFile ';
         const expectedResult: [string[], string] = [['fs.readFile'], 'fs.readFile'];
-        const expectedOutput: string[] = ['fs.readFile(\u001b[35mpath, options, callback_\u001b[39m)'];
+        const expectedOutput: string[] = ['fs.readFile(\u001b[35mpath, options, callback\u001b[39m)'];
+        if (process.version.startsWith('v6.')) {
+          expectedOutput[0] = expectedOutput[0].replace('callback', 'callback_');
+        }
         return testComplete(runList, code, expectedResult, expectedOutput);
       });
     });

@@ -5,6 +5,7 @@ import * as nodeRepl from 'repl';
 
 import { IRinoreOptions } from '.';
 import { setupContext } from './context';
+import { setupHistory } from './history';
 
 let repl: any;
 try {
@@ -82,13 +83,14 @@ export const start = (rinoreOptions: IRinoreOptions): nodeRepl.REPLServer => {
     throw new Error('Please install coffeescript module');
   }
   const options: {[key: string]: any} = {
-    historyFile: path.join(os.homedir(), '.rinore_history_cs'),
+    historyFile: null,
     input: rinoreOptions.input,
     output: rinoreOptions.output,
     prompt: rinoreOptions.prompt || 'rinore> ',
     terminal: rinoreOptions.terminal,
   };
   const replServer = repl.start(options);
+  setupHistory(replServer, path.join(os.homedir(), '.rinore_history_cs'), 1000);
   setupContext(replServer);
   replaceEval(replServer);
   replaceCompleter(replServer);

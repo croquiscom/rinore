@@ -1,3 +1,4 @@
+import * as net from 'net';
 import * as repl from 'repl';
 import * as yargs from 'yargs';
 
@@ -7,7 +8,7 @@ import { start as startTypescript } from './typescript';
 
 import { loadModules } from './context';
 
-export const startCLI = () => {
+export const startCLI = async () => {
   const argv = yargs
     .option('l', {
       alias: 'language',
@@ -24,12 +25,45 @@ export const startCLI = () => {
     .option('historyFile', {
       description: 'the name of the history file',
     })
+    .option('listen', {
+      description: 'listen on port instead of starting REPL',
+    })
     .help('help')
     .alias('h', 'help')
     .pkgConf('rinore')
     .argv;
 
   loadModules((argv.require as string[]) || []);
+
+  if (argv.listen) {
+    const server = net.createServer((socket) => {
+      start({
+        historyFile: argv.historyFile as string,
+        input: socket,
+        language: argv.language as string,
+        output: socket,
+        prompt: argv.prompt as string,
+        terminal: true,
+      })
+      .on('exit', () => {
+        socket.end();
+      });
+    });
+    process.on('SIGINT', () => {
+      server.close();
+      process.exit();
+    });
+    await new Promise((resolve, reject) => {
+      server.listen(argv.listen, (error: any) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
+    console.log(`Rinore is listening on ${argv.listen}`);
+  }
 
   start({
     historyFile: argv.historyFile as string,

@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import * as repl from 'repl';
-export declare const startCLI: () => void;
+export declare const startCLI: () => Promise<void>;
 export interface IRinoreOptions {
     language?: string;
     prompt?: string;

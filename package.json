@@ -23,7 +23,8 @@
     "test:coveralls": "npm run test:cov && cat coverage/lcov.info | coveralls"
   },
   "bin": {
-    "rinore": "./bin/rinore"
+    "rinore": "./bin/rinore",
+    "rinore-remote": "./bin/rinore-remote"
   },
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

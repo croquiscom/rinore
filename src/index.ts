@@ -8,8 +8,8 @@ import { start as startTypescript } from './typescript';
 
 import { loadModules } from './context';
 
-export const startCLI = async () => {
-  const argv = yargs
+function createArgvParser(): yargs.Argv {
+  return yargs
     .option('l', {
       alias: 'language',
       description: 'REPL language. javascript or coffeescript or typescript. The default is javascript',
@@ -30,8 +30,11 @@ export const startCLI = async () => {
     })
     .help('help')
     .alias('h', 'help')
-    .pkgConf('rinore')
-    .argv;
+    .pkgConf('rinore');
+}
+
+export const startCLI = async () => {
+  const argv = createArgvParser().argv;
 
   loadModules((argv.require as string[]) || []);
 
@@ -65,7 +68,7 @@ export const startCLI = async () => {
     console.log(`Rinore is listening on ${argv.listen}`);
   }
 
-  start({
+  startInternal({
     historyFile: argv.historyFile as string,
     language: argv.language as string,
     prompt: argv.prompt as string,
@@ -88,6 +91,14 @@ export interface IRinoreOptions {
 }
 
 export const start = (options: IRinoreOptions = {}): repl.REPLServer => {
+  const argv = createArgvParser().parse([]);
+  options.historyFile = options.historyFile || argv.historyFile;
+  options.language = options.language || argv.language;
+  options.prompt = options.prompt || argv.prompt;
+  return startInternal(options);
+};
+
+function startInternal(options: IRinoreOptions): repl.REPLServer {
   if (options.language === 'coffeescript') {
     return startCoffeeScript(options);
   } else if (options.language === 'typescript') {
@@ -95,6 +106,6 @@ export const start = (options: IRinoreOptions = {}): repl.REPLServer => {
   } else {
     return startJavascript(options);
   }
-};
+}
 
 export { context } from './context';

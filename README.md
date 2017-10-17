@@ -160,6 +160,58 @@ You can specify CLI arguments in the package.json
 }
 ```
 
+## Running Rinore server
+
+You can run a Rinore server via --listen argument.
+
+```
+$ rinore --listen 5678
+Rinore is listening on 5678
+rinore>
+```
+
+Or you can programmatically.
+
+```
+const net = require('net');
+const rinore = require('.');
+net.createServer((socket) => {
+  console.log('Starting new session...');
+  rinore.start({input: socket, output: socket, terminal: true})
+  .on('exit', () => {
+    console.log('Session closed.');
+    socket.end();
+  });
+}).listen(2000, (error) => {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Rinore is listening on 2000');
+  }
+});
+```
+
+You can connect to this server via `telnet` or `rinore-remote`.
+
+```
+$ telnet localhost 2000
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+rinore> 1+1
+1+1
+2
+rinore> ^]
+telnet> quit
+Connection closed.
+```
+
+```
+$ rinore-remote 2000
+rinore> 1+1
+2
+```
+
 # Inspiration
 
 To find best REPL experience, Rinore has referred some projects:

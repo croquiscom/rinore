@@ -8,11 +8,18 @@ import { setupHistory } from './history';
 
 let repl: any;
 try {
-// tslint:disable-next-line:no-var-requires
-  repl = require('coffee-script/repl');
-// tslint:disable-next-line:no-var-requires
-  require('coffee-script/register');
-} catch (error) {/* ignore */}
+    // tslint:disable-next-line:no-var-requires
+    repl = require('coffeescript/repl');
+    // tslint:disable-next-line:no-var-requires
+    require('coffeescript/register');
+} catch (error) {
+  try {
+    // tslint:disable-next-line:no-var-requires
+    repl = require('coffee-script/repl');
+    // tslint:disable-next-line:no-var-requires
+    require('coffee-script/register');
+  } catch (error) {/* ignore */}
+}
 
 function replaceEval(replServer: any) {
   const originalEval = replServer.eval;

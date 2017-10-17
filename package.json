@@ -18,7 +18,7 @@
     "prepublishOnly": "npm run lint && npm run build",
     "build": "rimraf lib && tsc -p src/tsconfig.build.json",
     "lint": "tslint -p tsconfig.json",
-    "test": "mocha --compilers ts:ts-node/register -t 5000",
+    "test": "mocha --require ts-node/register -t 5000 --exit 'test/*.ts'",
     "test:cov": "nyc npm run test",
     "test:coveralls": "npm run test:cov && cat coverage/lcov.info | coveralls"
   },
@@ -34,7 +34,7 @@
     "diff": "^3.3.0",
     "lodash": "^4.17.4",
     "node-watch": "^0.5.5",
-    "yargs": "^8.0.2"
+    "yargs": "^9.0.1"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.8",
@@ -42,11 +42,11 @@
     "@types/diff": "^3.2.0",
     "@types/lodash": "^4.14.72",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^8.0.20",
+    "@types/node": "^8.0.41",
     "@types/yargs": "^8.0.2",
     "chai": "^4.1.1",
-    "coveralls": "^2.13.1",
-    "mocha": "^3.5.0",
+    "coveralls": "^3.0.0",
+    "mocha": "^4.0.1",
     "nyc": "^11.2.1",
     "rimraf": "^2.6.1",
     "ts-node": "^3.3.0",

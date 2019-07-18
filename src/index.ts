@@ -8,25 +8,30 @@ import { start as startTypescript } from './typescript';
 
 import { loadModules } from './context';
 
-function createArgvParser(): yargs.Argv {
+function createArgvParser() {
   return yargs
     .option('l', {
-      alias: 'language',
       description: 'REPL language. javascript or coffeescript or typescript. The default is javascript',
+      string: true,
     })
+    .alias('l', 'language')
     .option('r', {
-      alias: 'require',
       array: true,
       description: 'preload the given module',
+      string: true,
     })
+    .alias('r', 'require')
     .option('prompt', {
       description: 'set prompt',
+      string: true,
     })
     .option('historyFile', {
       description: 'the name of the history file',
+      string: true,
     })
     .option('listen', {
       description: 'listen on port instead of starting REPL',
+      number: true,
     })
     .help('help')
     .alias('h', 'help')
@@ -48,21 +53,17 @@ export const startCLI = async () => {
         prompt: argv.prompt as string,
         terminal: true,
       })
-      .on('exit', () => {
-        socket.end();
-      });
+        .on('exit', () => {
+          socket.end();
+        });
     });
     process.on('SIGINT', () => {
       server.close();
       process.exit();
     });
     await new Promise((resolve, reject) => {
-      server.listen(argv.listen, (error: any) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve();
-        }
+      server.listen(argv.listen, () => {
+        resolve();
       });
     });
     console.log(`Rinore is listening on ${argv.listen}`);
@@ -73,12 +74,12 @@ export const startCLI = async () => {
     language: argv.language as string,
     prompt: argv.prompt as string,
   })
-  .on('exit', () => {
-    // exit CLI process even if there are scheduled works
-    setImmediate(() => {
-      process.exit(0);
+    .on('exit', () => {
+      // exit CLI process even if there are scheduled works
+      setImmediate(() => {
+        process.exit(0);
+      });
     });
-  });
 };
 
 export interface IRinoreOptions {

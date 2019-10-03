@@ -18,7 +18,7 @@
     "prepublishOnly": "npm run lint && npm run build",
     "build": "rimraf lib && tsc -p src/tsconfig.build.json",
     "lint": "tslint -p tsconfig.json",
-    "test": "mocha --require ts-node/register -t 5000 --exit 'test/*.ts'",
+    "test": "mocha --require ts-node/register -t 8000 --exit 'test/*.ts'",
     "test:cov": "nyc npm run test",
     "test:coveralls": "npm run test:cov && cat coverage/lcov.info | coveralls"
   },
@@ -29,29 +29,29 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "dependencies": {
-    "bluebird": "^3.5.5",
+    "bluebird": "^3.7.0",
     "diff": "^4.0.1",
-    "lodash": "^4.17.14",
-    "node-watch": "^0.6.2",
-    "yargs": "^13.3.0"
+    "lodash": "^4.17.15",
+    "node-watch": "^0.6.3",
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.27",
-    "@types/chai": "^4.1.7",
+    "@types/chai": "^4.2.3",
     "@types/diff": "^4.0.2",
-    "@types/lodash": "^4.14.136",
+    "@types/lodash": "^4.14.141",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.6.8",
-    "@types/yargs": "^13.0.0",
+    "@types/node": "^12.7.9",
+    "@types/yargs": "^13.0.3",
     "chai": "^4.2.0",
     "coffeescript": "^2.4.1",
-    "coveralls": "^3.0.5",
-    "mocha": "^6.1.4",
+    "coveralls": "^3.0.6",
+    "mocha": "^6.2.1",
     "nyc": "^14.1.1",
-    "rimraf": "^2.6.3",
-    "ts-node": "^8.3.0",
-    "tslint": "^5.18.0",
-    "typescript": "^3.5.3"
+    "rimraf": "^3.0.0",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.3"
   },
   "nyc": {
     "extension": [

@@ -41,7 +41,7 @@
     "@types/diff": "^4.0.2",
     "@types/lodash": "^4.14.144",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.12.5",
+    "@types/node": "^12.12.6",
     "@types/yargs": "^13.0.3",
     "chai": "^4.2.0",
     "coffeescript": "^2.4.1",
@@ -50,8 +50,8 @@
     "nyc": "^14.1.1",
     "rimraf": "^3.0.0",
     "ts-node": "^8.4.1",
-    "tslint": "^5.20.0",
-    "typescript": "^3.6.4"
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.2"
   },
   "nyc": {
     "extension": [

@@ -39,7 +39,7 @@
     "@types/bluebird": "^3.5.28",
     "@types/chai": "^4.2.4",
     "@types/diff": "^4.0.2",
-    "@types/lodash": "^4.14.144",
+    "@types/lodash": "^4.14.146",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.6",
     "@types/yargs": "^13.0.3",

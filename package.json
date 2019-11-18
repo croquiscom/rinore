@@ -36,7 +36,7 @@
     "yargs": "^14.2.0"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.28",
+    "@types/bluebird": "^3.5.29",
     "@types/chai": "^4.2.4",
     "@types/diff": "^4.0.2",
     "@types/lodash": "^4.14.144",

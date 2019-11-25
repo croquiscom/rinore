@@ -45,7 +45,7 @@
     "@types/yargs": "^13.0.3",
     "chai": "^4.2.0",
     "coffeescript": "^2.4.1",
-    "coveralls": "^3.0.7",
+    "coveralls": "^3.0.8",
     "mocha": "^6.2.2",
     "nyc": "^14.1.1",
     "rimraf": "^3.0.0",

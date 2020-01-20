@@ -30,7 +30,7 @@
   "types": "./lib/index.d.ts",
   "dependencies": {
     "bluebird": "^3.7.2",
-    "diff": "^4.0.1",
+    "diff": "^4.0.2",
     "lodash": "^4.17.15",
     "node-watch": "^0.6.3",
     "yargs": "^15.0.2"

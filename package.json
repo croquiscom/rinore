@@ -41,7 +41,7 @@
     "@types/diff": "^4.0.2",
     "@types/lodash": "^4.14.149",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.12.21",
+    "@types/node": "^13.7.7",
     "@types/yargs": "^13.0.3",
     "chai": "^4.2.0",
     "coffeescript": "^2.4.1",

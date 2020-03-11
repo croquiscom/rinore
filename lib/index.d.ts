@@ -1,7 +1,6 @@
 /// <reference types="node" />
 import * as repl from 'repl';
-export declare const startCLI: () => Promise<void>;
-export interface IRinoreOptions {
+export interface RinoreOptions {
     language?: string;
     prompt?: string;
     input?: NodeJS.ReadableStream;
@@ -9,5 +8,6 @@ export interface IRinoreOptions {
     terminal?: boolean;
     historyFile?: string;
 }
-export declare const start: (options?: IRinoreOptions) => repl.REPLServer;
+export declare const start: (options?: RinoreOptions) => repl.REPLServer;
+export declare const startCLI: () => Promise<void>;
 export { context } from './context';

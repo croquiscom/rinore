@@ -2,29 +2,29 @@ import * as Promise from 'bluebird';
 import * as os from 'os';
 import * as nodeRepl from 'repl';
 
-import { IRinoreOptions } from '.';
+import { RinoreOptions } from '.';
 import { setupContext } from './context';
 import { setupHistory } from './history';
 
 let repl: any;
 try {
-    // tslint:disable-next-line:no-var-requires
-    repl = require('coffeescript/repl');
-    // tslint:disable-next-line:no-var-requires
-    require('coffeescript/register');
-} catch (error) {
+  // tslint:disable-next-line:no-var-requires
+  repl = require('coffeescript/repl');
+  // tslint:disable-next-line:no-var-requires
+  require('coffeescript/register');
+} catch (error1) {
   try {
     // tslint:disable-next-line:no-var-requires
     repl = require('coffee-script/repl');
     // tslint:disable-next-line:no-var-requires
     require('coffee-script/register');
-  } catch (error) {/* ignore */}
+  } catch (error2) { /* ignore */ }
 }
 
 function replaceEval(replServer: any) {
   const originalEval = replServer.eval;
-  replServer.eval = (cmd: string, context: {[key: string]: any},
-                     filename: string, callback: (error?: any, result?: any) => void) => {
+  replServer.eval = (cmd: string, context: { [key: string]: any },
+    filename: string, callback: (error?: any, result?: any) => void) => {
     let assignTo = '';
     if (/^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test(cmd)) {
       assignTo = RegExp.$1;
@@ -71,9 +71,9 @@ function replaceCompleter(replServer: any) {
         return;
       }
       replServer.eval(result[1], replServer.context, 'repl', (e?: any, object?: any) => {
-        if (typeof(object) === 'function') {
-          const argsMatch = object.toString().match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)
-              || object.toString().match(/^[^\(]*\(\s*([^\)]*)\)/m);
+        if (typeof (object) === 'function') {
+          const argsMatch = object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
+            || object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
           replServer.output.write(os.EOL);
           replServer.output.write(`${result[1]} \u001b[35m${argsMatch[1]}\u001b[39m\r\n`);
           replServer._refreshLine();
@@ -84,11 +84,11 @@ function replaceCompleter(replServer: any) {
   };
 }
 
-export const start = (rinoreOptions: IRinoreOptions): nodeRepl.REPLServer => {
+export const start = (rinoreOptions: RinoreOptions): nodeRepl.REPLServer => {
   if (!repl) {
     throw new Error('Please install coffeescript module');
   }
-  const options: {[key: string]: any} = {
+  const options: { [key: string]: any } = {
     historyFile: null,
     input: rinoreOptions.input,
     output: rinoreOptions.output,

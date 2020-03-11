@@ -8,6 +8,15 @@ import { start as startTypescript } from './typescript';
 
 import { loadModules } from './context';
 
+export interface RinoreOptions {
+  language?: string;
+  prompt?: string;
+  input?: NodeJS.ReadableStream;
+  output?: NodeJS.WritableStream;
+  terminal?: boolean;
+  historyFile?: string;
+}
+
 function createArgvParser() {
   return yargs
     .option('l', {
@@ -37,6 +46,24 @@ function createArgvParser() {
     .alias('h', 'help')
     .pkgConf('rinore');
 }
+
+function startInternal(options: RinoreOptions): repl.REPLServer {
+  if (options.language === 'coffeescript') {
+    return startCoffeeScript(options);
+  } else if (options.language === 'typescript') {
+    return startTypescript(options);
+  } else {
+    return startJavascript(options);
+  }
+}
+
+export const start = (options: RinoreOptions = {}): repl.REPLServer => {
+  const argv = createArgvParser().parse([]);
+  options.historyFile = options.historyFile || argv.historyFile;
+  options.language = options.language || argv.language;
+  options.prompt = options.prompt || argv.prompt;
+  return startInternal(options);
+};
 
 export const startCLI = async () => {
   const argv = createArgvParser().argv;
@@ -81,32 +108,5 @@ export const startCLI = async () => {
       });
     });
 };
-
-export interface IRinoreOptions {
-  language?: string;
-  prompt?: string;
-  input?: NodeJS.ReadableStream;
-  output?: NodeJS.WritableStream;
-  terminal?: boolean;
-  historyFile?: string;
-}
-
-export const start = (options: IRinoreOptions = {}): repl.REPLServer => {
-  const argv = createArgvParser().parse([]);
-  options.historyFile = options.historyFile || argv.historyFile;
-  options.language = options.language || argv.language;
-  options.prompt = options.prompt || argv.prompt;
-  return startInternal(options);
-};
-
-function startInternal(options: IRinoreOptions): repl.REPLServer {
-  if (options.language === 'coffeescript') {
-    return startCoffeeScript(options);
-  } else if (options.language === 'typescript') {
-    return startTypescript(options);
-  } else {
-    return startJavascript(options);
-  }
-}
 
 export { context } from './context';

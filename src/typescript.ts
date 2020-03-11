@@ -3,7 +3,7 @@ import * as os from 'os';
 import * as repl from 'repl';
 import * as vm from 'vm';
 
-import { IRinoreOptions } from '.';
+import { RinoreOptions } from '.';
 import { context as rinoreContext, modules as rinoreModules, setupContext } from './context';
 import { setupHistory } from './history';
 
@@ -15,19 +15,19 @@ const nodeModules = [
 ];
 
 let register: {
-  compile(code: string, fileName: string, lineOffset?: number): string,
-  getTypeInfo(code: string, fileName: string, position: number): {name: string, comment: string},
+  compile(code: string, fileName: string, lineOffset?: number): string;
+  getTypeInfo(code: string, fileName: string, position: number): { name: string; comment: string };
 };
 try {
   delete require.extensions['.ts'];
   delete require.extensions['.tsx'];
-// tslint:disable-next-line:no-var-requires
+  // tslint:disable-next-line:no-var-requires
   register = require('ts-node').register();
-} catch (error) {/* ignore */}
+} catch (error) {/* ignore */ }
 
-function createTsEval(accumulatedCode: { input: string, output: string}) {
-  return function tsEval(cmd: string, context: {[key: string]: any},
-          filename: string, callback: (error?: any, result?: any) => void): void {
+function createTsEval(accumulatedCode: { input: string; output: string }) {
+  return function tsEval(cmd: string, context: { [key: string]: any },
+    filename: string, callback: (error?: any, result?: any) => void): void {
     const isReplComplete = filename === 'repl_complete';
     let assignToKeyword = '';
     let assignTo = '';
@@ -56,7 +56,7 @@ function createTsEval(accumulatedCode: { input: string, output: string}) {
     try {
       const changes = diffLines(accumulatedCode.output, jsCode);
       const result = changes.reduce((r, change) => {
-        return change.added ? vm.runInContext(change.value, context, {filename}) : r;
+        return change.added ? vm.runInContext(change.value, context, { filename }) : r;
       }, undefined);
       Promise.resolve()
         .then(() => result)
@@ -106,9 +106,9 @@ function replaceCompleter(replServer: any) {
         return;
       }
       replServer.eval(result[1], replServer.context, 'repl_complete', (e?: any, object?: any) => {
-        if (typeof(object) === 'function') {
-          const argsMatch = object.toString().match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)
-              || object.toString().match(/^[^\(]*\(\s*([^\)]*)\)/m);
+        if (typeof (object) === 'function') {
+          const argsMatch = object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
+            || object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
           replServer.output.write(os.EOL);
           replServer.output.write(`${result[1]}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
           replServer._refreshLine();
@@ -119,29 +119,29 @@ function replaceCompleter(replServer: any) {
   };
 }
 
-function setupAccumulatedCodeInput(accumulatedCode: { input: string, output: string}) {
+function setupAccumulatedCodeInput(accumulatedCode: { input: string; output: string }) {
   const imported: string[] = [];
-  for (const module of nodeModules) {
-    accumulatedCode.input += `import * as ${module} from '${module}'\n`;
+  for (const nodeModule of nodeModules) {
+    accumulatedCode.input += `import * as ${nodeModule} from '${nodeModule}'\n`;
   }
-  for (const module of rinoreModules) {
+  for (const rinoreModule of rinoreModules) {
     try {
-      const importExpr = `import * as _test from '${module.module}'\n`;
+      const importExpr = `import * as _test from '${rinoreModule.module}'\n`;
       register.compile(accumulatedCode.input + importExpr, '[eval].ts');
     } catch (error) {
       // if import statement fails, skip to declare
       continue;
     }
-    if (module.name === '*') {
-      imported.push.apply(imported, module.members);
-      accumulatedCode.input += `import {${module.members.join(',')}} from '${module.module}'\n`;
+    if (rinoreModule.name === '*') {
+      imported.push(...rinoreModule.members);
+      accumulatedCode.input += `import {${rinoreModule.members.join(',')}} from '${rinoreModule.module}'\n`;
     } else {
-      imported.push(module.name);
-      accumulatedCode.input += `import * as ${module.name} from '${module.module}'\n`;
+      imported.push(rinoreModule.name);
+      accumulatedCode.input += `import * as ${rinoreModule.name} from '${rinoreModule.module}'\n`;
     }
   }
   for (const key in rinoreContext) {
-    if (rinoreContext.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(rinoreContext, key)) {
       if (imported.indexOf(key) < 0) {
         accumulatedCode.input += `declare var ${key}: any;\n`;
       }
@@ -151,7 +151,7 @@ function setupAccumulatedCodeInput(accumulatedCode: { input: string, output: str
   accumulatedCode.input += 'void 0\n';
 }
 
-export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
+export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
   if (!register) {
     throw new Error('Please install ts-node module');
   }
@@ -159,7 +159,7 @@ export const start = (rinoreOptions: IRinoreOptions): repl.REPLServer => {
     input: '',
     output: '"use strict";\n',
   };
-  const options: {[key: string]: any} = {
+  const options: { [key: string]: any } = {
     eval: createTsEval(accumulatedCode),
     historySize: 1000,
     input: rinoreOptions.input,

@@ -1,4 +1,5 @@
-var funcJsExpr = function(foo, bar) {
+const funcJsExpr = function (foo, bar) {
+  //
 };
 
 exports.funcJsExpr = funcJsExpr;

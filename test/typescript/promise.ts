@@ -17,7 +17,7 @@ describe('promise', () => {
       'result.length',
     ];
     const expectedList = [
-      "undefined",
+      'undefined',
       '4',
     ];
     return testSimple(expressionList, expectedList);

@@ -1,10 +1,9 @@
-import * as Promise from 'bluebird';
 import * as os from 'os';
 import * as nodeRepl from 'repl';
-
-import { RinoreOptions } from '.';
+import * as Promise from 'bluebird';
 import { setupContext } from './context';
 import { setupHistory } from './history';
+import { RinoreOptions } from '.';
 
 let repl: any;
 try {

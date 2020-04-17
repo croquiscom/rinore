@@ -1,10 +1,9 @@
-import * as Promise from 'bluebird';
 import * as os from 'os';
 import * as repl from 'repl';
-
-import { RinoreOptions } from '.';
+import * as Promise from 'bluebird';
 import { setupContext } from './context';
 import { setupHistory } from './history';
+import { RinoreOptions } from '.';
 
 function replaceEval(replServer: any) {
   const originalEval = replServer.eval;

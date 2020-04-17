@@ -1,6 +1,6 @@
-import { expect } from 'chai';
 import { spawn } from 'child_process';
 import * as stream from 'stream';
+import { expect } from 'chai';
 import * as rinore from '../src';
 
 function testSimple(language: string, expressionList: string[], expectedList: string[]): Promise<void> {

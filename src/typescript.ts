@@ -1,11 +1,10 @@
-import { diffLines } from 'diff';
 import * as os from 'os';
 import * as repl from 'repl';
 import * as vm from 'vm';
-
-import { RinoreOptions } from '.';
+import { diffLines } from 'diff';
 import { context as rinoreContext, modules as rinoreModules, setupContext } from './context';
 import { setupHistory } from './history';
+import { RinoreOptions } from '.';
 
 const nodeModules = [
   'assert', 'buffer', 'child_process', 'cluster', 'dgram', 'dns',

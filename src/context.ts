@@ -1,7 +1,7 @@
 import * as fs from 'fs';
-import { camelCase } from 'lodash';
 import * as path from 'path';
 import * as repl from 'repl';
+import { camelCase } from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const watch = require('node-watch');

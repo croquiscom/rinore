@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import * as stream from 'stream';
+import stream from 'stream';
 import { expect } from 'chai';
 import * as rinore from '../src';
 

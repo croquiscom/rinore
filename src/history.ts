@@ -1,7 +1,7 @@
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
-import * as repl from 'repl';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import repl from 'repl';
 
 export function setupHistory(replServer: repl.REPLServer, historyFile: string, historySize: number) {
   historyFile = path.join(os.homedir(), historyFile);

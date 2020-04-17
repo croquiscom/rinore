@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import * as repl from 'repl';
+import repl from 'repl';
 export declare const context: {
     [key: string]: any;
 };

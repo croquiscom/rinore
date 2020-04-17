@@ -1,6 +1,6 @@
-import * as os from 'os';
-import * as repl from 'repl';
-import * as vm from 'vm';
+import os from 'os';
+import repl from 'repl';
+import vm from 'vm';
 import { diffLines } from 'diff';
 import { context as rinoreContext, modules as rinoreModules, setupContext } from './context';
 import { setupHistory } from './history';
@@ -121,11 +121,11 @@ function replaceCompleter(replServer: any) {
 function setupAccumulatedCodeInput(accumulatedCode: { input: string; output: string }) {
   const imported: string[] = [];
   for (const nodeModule of nodeModules) {
-    accumulatedCode.input += `import * as ${nodeModule} from '${nodeModule}'\n`;
+    accumulatedCode.input += `import ${nodeModule} from '${nodeModule}'\n`;
   }
   for (const rinoreModule of rinoreModules) {
     try {
-      const importExpr = `import * as _test from '${rinoreModule.module}'\n`;
+      const importExpr = `import _test from '${rinoreModule.module}'\n`;
       register.compile(accumulatedCode.input + importExpr, '[eval].ts');
     } catch (error) {
       // if import statement fails, skip to declare
@@ -136,7 +136,7 @@ function setupAccumulatedCodeInput(accumulatedCode: { input: string; output: str
       accumulatedCode.input += `import {${rinoreModule.members.join(',')}} from '${rinoreModule.module}'\n`;
     } else {
       imported.push(rinoreModule.name);
-      accumulatedCode.input += `import * as ${rinoreModule.name} from '${rinoreModule.module}'\n`;
+      accumulatedCode.input += `import ${rinoreModule.name} from '${rinoreModule.module}'\n`;
     }
   }
   for (const key in rinoreContext) {

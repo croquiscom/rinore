@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as repl from 'repl';
+import fs from 'fs';
+import path from 'path';
+import repl from 'repl';
 import { camelCase } from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

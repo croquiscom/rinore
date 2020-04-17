@@ -1,11 +1,9 @@
-import * as net from 'net';
-import * as repl from 'repl';
-import * as yargs from 'yargs';
-
+import net from 'net';
+import repl from 'repl';
+import yargs from 'yargs';
 import { start as startCoffeeScript } from './coffeescript';
 import { start as startJavascript } from './javascript';
 import { start as startTypescript } from './typescript';
-
 import { loadModules } from './context';
 
 export interface RinoreOptions {

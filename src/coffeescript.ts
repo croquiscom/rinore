@@ -1,6 +1,6 @@
-import * as os from 'os';
-import * as nodeRepl from 'repl';
-import * as Promise from 'bluebird';
+import os from 'os';
+import nodeRepl from 'repl';
+import Bluebird from 'bluebird';
 import { setupContext } from './context';
 import { setupHistory } from './history';
 import { RinoreOptions } from '.';
@@ -28,7 +28,7 @@ function replaceEval(replServer: any) {
     if (/^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test(cmd)) {
       assignTo = RegExp.$1;
     }
-    const runner = new Promise((resolve, reject) => {
+    const runner = new Bluebird((resolve, reject) => {
       originalEval(cmd, context, filename, (error?: any, result?: any) => {
         if (error) {
           reject(error);

@@ -167,6 +167,24 @@ export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
     terminal: rinoreOptions.terminal,
   };
   const replServer = repl.start(options);
+  replServer.defineCommand('type', {
+    help: 'Check the type of a TypeScript identifier',
+    action: (identifier: string) => {
+      if (!identifier) {
+        replServer.displayPrompt();
+        return;
+      }
+      const input = `${accumulatedCode.input}${identifier}`;
+      const typeInfo = register.getTypeInfo(input, '[eval].ts', input.length);
+      if (typeInfo.name) {
+        replServer.outputStream.write(`${typeInfo.name}\n`);
+      }
+      if (typeInfo.comment) {
+        replServer.outputStream.write(`${typeInfo.comment}\n`);
+      }
+      replServer.displayPrompt();
+    },
+  });
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_ts', 1000);
   setupContext(replServer);
   replaceCompleter(replServer);

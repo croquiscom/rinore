@@ -83,7 +83,7 @@ function createTsEval(accumulatedCode: { input: string; output: string }) {
   };
 }
 
-function replaceCompleter(replServer: any) {
+function replaceCompleter(replServer: any, accumulatedCode: { input: string; output: string }) {
   const originalCompleter = replServer.completer;
   replServer.completer = (line: string, callback: (error?: any, result?: any) => void) => {
     const hasExtraChars = /(?:\(|\s)/.test(line);
@@ -104,16 +104,24 @@ function replaceCompleter(replServer: any) {
         callback(error, result);
         return;
       }
-      replServer.eval(result[1], replServer.context, 'repl_complete', (e?: any, object?: any) => {
-        if (typeof (object) === 'function') {
-          const argsMatch = object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
-            || object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
-          replServer.output.write(os.EOL);
-          replServer.output.write(`${result[1]}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
-          replServer._refreshLine();
-        }
+      const input = `${accumulatedCode.input}${result[1]}`;
+      const typeInfo = register.getTypeInfo(input, '[eval].ts', input.length);
+      if (/^(?:function\s*|const [^:]*:\s*|let [^:]*:\s*|var [^:]*:\s*)[^(]*\(\s*([^)]*)\)/m.exec(typeInfo.name)) {
+        replServer.output.write(os.EOL);
+        replServer.output.write(`${result[1]}(\u001b[35m${RegExp.$1}\u001b[39m)\r\n`);
         callback(error, [[result[1]], result[1]]);
-      });
+      } else {
+        replServer.eval(result[1], replServer.context, 'repl_complete', (e?: any, object?: any) => {
+          if (typeof (object) === 'function') {
+            const argsMatch = object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
+              || object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
+            replServer.output.write(os.EOL);
+            replServer.output.write(`${result[1]}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
+            replServer._refreshLine();
+          }
+          callback(error, [[result[1]], result[1]]);
+        });
+      }
     });
   };
 }
@@ -187,7 +195,7 @@ export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
   });
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_ts', 1000);
   setupContext(replServer);
-  replaceCompleter(replServer);
+  replaceCompleter(replServer, accumulatedCode);
   setupAccumulatedCodeInput(accumulatedCode);
   vm.runInContext('exports = module.exports', replServer.context);
   return replServer;

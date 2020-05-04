@@ -32,7 +32,7 @@ describe('complete', () => {
       });
 
       it('JavaScript function declaration', () => {
-        loadModules([`${__dirname}/../samples/js_func_decl:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/js_func_decl:*`], { silent: true });
         const runList: string[] = [];
         const code = 'funcJsDecl';
         const expectedResult: [string[], string] = [['funcJsDecl'], 'funcJsDecl'];
@@ -41,7 +41,7 @@ describe('complete', () => {
       });
 
       it('JavaScript function expression', () => {
-        loadModules([`${__dirname}/../samples/js_func_expr:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/js_func_expr:*`], { silent: true });
         const runList: string[] = [];
         const code = 'funcJsExpr';
         const expectedResult: [string[], string] = [['funcJsExpr'], 'funcJsExpr'];
@@ -50,7 +50,7 @@ describe('complete', () => {
       });
 
       it('JavaScript arrow function', () => {
-        loadModules([`${__dirname}/../samples/js_func_arrow:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/js_func_arrow:*`], { silent: true });
         const runList: string[] = [];
         const code = 'funcJsArrow';
         const expectedResult: [string[], string] = [['funcJsArrow'], 'funcJsArrow'];
@@ -59,7 +59,7 @@ describe('complete', () => {
       });
 
       it('CoffeeScript function', () => {
-        loadModules([`${__dirname}/../samples/coffee_func:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/coffee_func:*`], { silent: true });
         const runList: string[] = [];
         const code = 'funcCoffee';
         const expectedResult: [string[], string] = [['funcCoffee'], 'funcCoffee'];
@@ -68,7 +68,7 @@ describe('complete', () => {
       });
 
       it('TypeScript function declaration', () => {
-        loadModules([`${__dirname}/../samples/ts_func_decl:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/ts_func_decl:*`], { silent: true });
         const runList: string[] = [];
         const code = 'funcTsDecl';
         const expectedResult: [string[], string] = [['funcTsDecl'], 'funcTsDecl'];
@@ -77,7 +77,7 @@ describe('complete', () => {
       });
 
       it('TypeScript function expression', () => {
-        loadModules([`${__dirname}/../samples/ts_func_expr:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/ts_func_expr:*`], { silent: true });
         const runList: string[] = [];
         const code = 'funcTsExpr';
         const expectedResult: [string[], string] = [['funcTsExpr'], 'funcTsExpr'];
@@ -86,7 +86,7 @@ describe('complete', () => {
       });
 
       it('TypeScript arrow function', () => {
-        loadModules([`${__dirname}/../samples/ts_func_arrow:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/ts_func_arrow:*`], { silent: true });
         const runList: string[] = [];
         const code = 'funcTsArrow';
         const expectedResult: [string[], string] = [['funcTsArrow'], 'funcTsArrow'];
@@ -95,7 +95,7 @@ describe('complete', () => {
       });
 
       it('TypeScript class method', () => {
-        loadModules([`${__dirname}/../samples/ts_class_method:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/ts_class_method:*`], { silent: true });
         const runList: string[] = ['const instance = new TsClass()'];
         const code = 'instance.method';
         const expectedResult: [string[], string] = [['instance.method'], 'instance.method'];
@@ -114,7 +114,7 @@ describe('complete', () => {
       });
 
       it('with open parentheses', () => {
-        loadModules([`${__dirname}/../samples/js_func_decl:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/js_func_decl:*`], { silent: true });
         const runList: string[] = [];
         const code = 'funcJsDecl(';
         const expectedResult: [string[], string] = [['funcJsDecl'], 'funcJsDecl'];
@@ -123,7 +123,7 @@ describe('complete', () => {
       });
 
       it('with extra space', () => {
-        loadModules([`${__dirname}/../samples/js_func_decl:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/js_func_decl:*`], { silent: true });
         const runList: string[] = [];
         const code = 'funcJsDecl ';
         const expectedResult: [string[], string] = [['funcJsDecl'], 'funcJsDecl'];
@@ -132,7 +132,7 @@ describe('complete', () => {
       });
 
       it('inside expression', () => {
-        loadModules([`${__dirname}/../samples/js_func_decl:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/js_func_decl:*`], { silent: true });
         const runList: string[] = [];
         const code = 'console.log(funcJsDecl';
         const expectedResult: [string[], string] = [['funcJsDecl'], 'funcJsDecl'];
@@ -170,7 +170,7 @@ describe('complete', () => {
       });
 
       it('with extra space', () => {
-        loadModules([`${__dirname}/../samples/js_func_decl:*`], {silent: true});
+        loadModules([`${__dirname}/../samples/js_func_decl:*`], { silent: true });
         const runList: string[] = [];
         const code = 'fs.readFile ';
         const expectedResult: [string[], string] = [['fs.readFile'], 'fs.readFile'];

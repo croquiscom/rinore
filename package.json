@@ -39,13 +39,13 @@
   },
   "devDependencies": {
     "@croquiscom/eslint-config": "^1.0.2",
-    "@types/bluebird": "^3.5.30",
+    "@types/bluebird": "^3.5.32",
     "@types/chai": "^4.2.11",
     "@types/diff": "^4.0.2",
-    "@types/lodash": "^4.14.150",
+    "@types/lodash": "^4.14.154",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^13.13.4",
-    "@types/yargs": "^15.0.4",
+    "@types/node": "^14.0.9",
+    "@types/yargs": "^15.0.5",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "chai": "^4.2.0",
@@ -53,12 +53,12 @@
     "coveralls": "^3.1.0",
     "eslint": "^6.8.0",
     "husky": "^4.2.5",
-    "lint-staged": "^10.2.2",
-    "mocha": "^7.1.2",
-    "nyc": "^15.0.1",
+    "lint-staged": "^10.2.7",
+    "mocha": "^7.2.0",
+    "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^8.10.1",
-    "typescript": "^3.8.3"
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.3"
   },
   "nyc": {
     "extension": [

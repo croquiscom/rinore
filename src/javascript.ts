@@ -1,8 +1,10 @@
 import os from 'os';
 import repl from 'repl';
+import { inspect } from 'util';
 import Bluebird from 'bluebird';
 import { setupContext } from './context';
 import { setupHistory } from './history';
+import { getMajorNodeVersion } from './utils';
 import { RinoreOptions } from '.';
 
 function replaceEval(replServer: any) {
@@ -81,6 +83,15 @@ export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_js', 1000);
   setupContext(replServer);
   replaceEval(replServer);
-  replaceCompleter(replServer);
+  if (getMajorNodeVersion() >= 12) {
+    // show argument on preview
+    (Function.prototype as any)[inspect.custom] = function () {
+      const argsMatch = this.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
+        || this.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
+      return `[Function: ${this.name}(${argsMatch[1]})]`;
+    };
+  } else {
+    replaceCompleter(replServer);
+  }
   return replServer;
 };

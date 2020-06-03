@@ -1,8 +1,10 @@
 import os from 'os';
 import nodeRepl from 'repl';
+import { inspect } from 'util';
 import Bluebird from 'bluebird';
 import { setupContext } from './context';
 import { setupHistory } from './history';
+import { getMajorNodeVersion } from './utils';
 import { RinoreOptions } from '.';
 
 let repl: any;
@@ -98,6 +100,10 @@ export const start = (rinoreOptions: RinoreOptions): nodeRepl.REPLServer => {
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_cs', 1000);
   setupContext(replServer);
   replaceEval(replServer);
-  replaceCompleter(replServer);
+  if (getMajorNodeVersion() >= 12) {
+    //
+  } else {
+    replaceCompleter(replServer);
+  }
   return replServer;
 };

@@ -1,9 +1,11 @@
 import os from 'os';
 import repl from 'repl';
+import { inspect } from 'util';
 import vm from 'vm';
 import { diffLines } from 'diff';
 import { context as rinoreContext, modules as rinoreModules, setupContext } from './context';
 import { setupHistory } from './history';
+import { getMajorNodeVersion } from './utils';
 import { RinoreOptions } from '.';
 
 const nodeModules = [
@@ -195,7 +197,11 @@ export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
   });
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_ts', 1000);
   setupContext(replServer);
-  replaceCompleter(replServer, accumulatedCode);
+  if (getMajorNodeVersion() >= 12) {
+    //
+  } else {
+    replaceCompleter(replServer, accumulatedCode);
+  }
   setupAccumulatedCodeInput(accumulatedCode);
   vm.runInContext('exports = module.exports', replServer.context);
   return replServer;

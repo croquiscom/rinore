@@ -1,22 +1,25 @@
+import { inspect } from 'util';
 import os from 'os';
 import repl from 'repl';
-import { inspect } from 'util';
 import Bluebird from 'bluebird';
+
 import { setupContext } from './context';
 import { setupHistory } from './history';
 import { getMajorNodeVersion } from './utils';
 import { RinoreOptions } from '.';
 
-function replaceEval(replServer: any) {
-  const originalEval = replServer.eval;
-  replServer.eval = (cmd: string, context: { [key: string]: any },
-    filename: string, callback: (error?: any, result?: any) => void) => {
+type ReplServer = repl.REPLServer & { original_eval: repl.REPLEval };
+
+function replaceEval(replServer: repl.REPLServer): ReplServer {
+  const new_server = Object.assign(replServer, { original_eval: replServer.eval });
+  const custom_eval: repl.REPLEval = (cmd, context, filename, callback) => {
     let assignTo = '';
     if (/^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test(cmd)) {
       assignTo = RegExp.$1;
     }
+
     const runner = new Bluebird((resolve, reject) => {
-      originalEval(cmd, context, filename, (error?: any, result?: any) => {
+      new_server.original_eval(cmd, context, filename, (error, result) => {
         if (error) {
           reject(error);
         } else {
@@ -30,9 +33,11 @@ function replaceEval(replServer: any) {
       }
       callback(null, result);
     }).catch((error) => {
-      callback(error);
+      callback(error, undefined);
     });
   };
+
+  return Object.assign(new_server, { eval: custom_eval });
 }
 
 function replaceCompleter(replServer: any) {
@@ -71,7 +76,7 @@ function replaceCompleter(replServer: any) {
   };
 }
 
-export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
+export const start = (rinoreOptions: RinoreOptions): ReplServer => {
   const options: { [key: string]: any } = {
     historySize: 1000,
     input: rinoreOptions.input,
@@ -82,7 +87,7 @@ export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
   const replServer = repl.start(options);
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_js', 1000);
   setupContext(replServer);
-  replaceEval(replServer);
+  const new_server = replaceEval(replServer);
   if (getMajorNodeVersion() >= 12) {
     // show argument on preview
     (Function.prototype as any)[inspect.custom] = function () {
@@ -91,7 +96,7 @@ export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
       return `[Function: ${this.name}(${argsMatch[1]})]`;
     };
   } else {
-    replaceCompleter(replServer);
+    replaceCompleter(new_server);
   }
-  return replServer;
+  return new_server;
 };

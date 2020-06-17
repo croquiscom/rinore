@@ -91,8 +91,12 @@ export const start = (rinoreOptions: RinoreOptions): ReplServer => {
   if (getMajorNodeVersion() >= 12) {
     // show argument on preview
     (Function.prototype as any)[inspect.custom] = function () {
-      const argsMatch = this.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
-        || this.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
+      const argsMatch =
+        this.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
+        || this.toString().match(/^[^(]*\(\s*([^)]*)\)/m)
+        || this.constructor.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
+        || this.constructor.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
+
       return `[Function: ${this.name}(${argsMatch[1]})]`;
     };
   } else {

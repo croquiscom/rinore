@@ -21,7 +21,7 @@ function testSimple(language: string, expressionList: string[], expectedList: st
     write(chunk: string, encoding, callback) {
       if (chunk === 'rinore> ') {
         if (expressionList.length > 0) {
-          input.push(expressionList.shift() + '\n');
+          input.push(`${expressionList.shift()}\n`);
         } else {
           input.push(null);
           waitOutputResolve();
@@ -74,7 +74,7 @@ function testSpawn(language: string, argumentList: string[],
     for (const line of data.split('\n')) {
       if (line === 'rinore> ') {
         if (expressionList.length > 0) {
-          child.stdin.write(expressionList.shift() + '\n');
+          child.stdin.write(`${expressionList.shift()}\n`);
         } else {
           child.stdin.end();
           child.kill();
@@ -128,7 +128,7 @@ function testComplete(language: string, runList: string[], code: string,
     write(chunk: string, encoding, callback) {
       if (chunk === 'rinore> ') {
         if (runList.length > 0) {
-          input.push(runList.shift() + '\n');
+          input.push(`${runList.shift()}\n`);
         } else {
           input.push(null);
           waitOutputResolve();
@@ -166,16 +166,16 @@ function testComplete(language: string, runList: string[], code: string,
 }
 
 export function testCompleteJavascript(runList: string[], code: string,
-  expectedResult: [string[], string], expectedOutput: string[]) {
+  expectedResult: [string[], string], expectedOutput: string[]): Promise<void> {
   return testComplete('javascript', runList, code, expectedResult, expectedOutput);
 }
 
 export function testCompleteCoffeescript(runList: string[], code: string,
-  expectedResult: [string[], string], expectedOutput: string[]) {
+  expectedResult: [string[], string], expectedOutput: string[]): Promise<void> {
   return testComplete('coffeescript', runList, code, expectedResult, expectedOutput);
 }
 
 export function testCompleteTypescript(runList: string[], code: string,
-  expectedResult: [string[], string], expectedOutput: string[]) {
+  expectedResult: [string[], string], expectedOutput: string[]): Promise<void> {
   return testComplete('typescript', runList, code, expectedResult, expectedOutput);
 }

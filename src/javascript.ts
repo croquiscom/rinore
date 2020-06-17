@@ -1,25 +1,24 @@
 import { inspect } from 'util';
 import os from 'os';
-import repl from 'repl';
+import nodeRepl from 'repl';
 import Bluebird from 'bluebird';
-
 import { setupContext } from './context';
 import { setupHistory } from './history';
 import { getMajorNodeVersion } from './utils';
 import { RinoreOptions } from '.';
 
-type ReplServer = repl.REPLServer & { original_eval: repl.REPLEval };
+type ReplServer = nodeRepl.REPLServer & { original_eval: nodeRepl.REPLEval };
 
-function replaceEval(replServer: repl.REPLServer): ReplServer {
+function replaceEval(replServer: nodeRepl.REPLServer): ReplServer {
   const new_server = Object.assign(replServer, { original_eval: replServer.eval });
-  const custom_eval: repl.REPLEval = (cmd, context, filename, callback) => {
+  const custom_eval: nodeRepl.REPLEval = (cmd: string, context: { [key: string]: any },
+    filename: string, callback: (error?: any, result?: any) => void) => {
     let assignTo = '';
     if (/^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test(cmd)) {
       assignTo = RegExp.$1;
     }
-
     const runner = new Bluebird((resolve, reject) => {
-      new_server.original_eval(cmd, context, filename, (error, result) => {
+      new_server.original_eval(cmd, context, filename, (error?: any, result?: any) => {
         if (error) {
           reject(error);
         } else {
@@ -33,7 +32,7 @@ function replaceEval(replServer: repl.REPLServer): ReplServer {
       }
       callback(null, result);
     }).catch((error) => {
-      callback(error, undefined);
+      callback(error);
     });
   };
 
@@ -84,7 +83,7 @@ export const start = (rinoreOptions: RinoreOptions): ReplServer => {
     prompt: rinoreOptions.prompt || 'rinore> ',
     terminal: rinoreOptions.terminal,
   };
-  const replServer = repl.start(options);
+  const replServer = nodeRepl.start(options);
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_js', 1000);
   setupContext(replServer);
   const new_server = replaceEval(replServer);

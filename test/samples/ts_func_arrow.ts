@@ -1,4 +1,4 @@
-const funcTsArrow = (foo: string, bar: number) => {
+const funcTsArrow = (foo: string, bar: number): void => {
   //
 };
 

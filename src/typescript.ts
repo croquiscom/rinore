@@ -1,6 +1,5 @@
 import os from 'os';
 import repl from 'repl';
-import { inspect } from 'util';
 import vm from 'vm';
 import { diffLines } from 'diff';
 import { context as rinoreContext, modules as rinoreModules, setupContext } from './context';
@@ -22,9 +21,9 @@ let register: {
 try {
   delete require.extensions['.ts'];
   delete require.extensions['.tsx'];
-  // tslint:disable-next-line:no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   register = require('ts-node').register();
-} catch (error) {/* ignore */ }
+} catch (error) { /* ignore */ }
 
 function createTsEval(accumulatedCode: { input: string; output: string }) {
   return function tsEval(cmd: string, context: { [key: string]: any },

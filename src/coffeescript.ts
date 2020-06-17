@@ -1,37 +1,34 @@
 import os from 'os';
 import nodeRepl from 'repl';
-import { inspect } from 'util';
 import Bluebird from 'bluebird';
 import { setupContext } from './context';
 import { setupHistory } from './history';
 import { getMajorNodeVersion } from './utils';
 import { RinoreOptions } from '.';
 
+type ReplServer = nodeRepl.REPLServer & { original_eval: nodeRepl.REPLEval };
+
 let repl: any;
 try {
-  // tslint:disable-next-line:no-var-requires
   repl = require('coffeescript/repl');
-  // tslint:disable-next-line:no-var-requires
   require('coffeescript/register');
 } catch (error1) {
   try {
-    // tslint:disable-next-line:no-var-requires
     repl = require('coffee-script/repl');
-    // tslint:disable-next-line:no-var-requires
     require('coffee-script/register');
   } catch (error2) { /* ignore */ }
 }
 
-function replaceEval(replServer: any) {
-  const originalEval = replServer.eval;
-  replServer.eval = (cmd: string, context: { [key: string]: any },
+function replaceEval(replServer: nodeRepl.REPLServer): ReplServer {
+  const new_server = Object.assign(replServer, { original_eval: replServer.eval });
+  const custom_eval: nodeRepl.REPLEval = (cmd: string, context: { [key: string]: any },
     filename: string, callback: (error?: any, result?: any) => void) => {
     let assignTo = '';
     if (/^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test(cmd)) {
       assignTo = RegExp.$1;
     }
     const runner = new Bluebird((resolve, reject) => {
-      originalEval(cmd, context, filename, (error?: any, result?: any) => {
+      new_server.original_eval(cmd, context, filename, (error?: any, result?: any) => {
         if (error) {
           reject(error);
         } else {
@@ -48,6 +45,8 @@ function replaceEval(replServer: any) {
       callback(error);
     });
   };
+
+  return Object.assign(new_server, { eval: custom_eval });
 }
 
 function replaceCompleter(replServer: any) {
@@ -85,7 +84,7 @@ function replaceCompleter(replServer: any) {
   };
 }
 
-export const start = (rinoreOptions: RinoreOptions): nodeRepl.REPLServer => {
+export const start = (rinoreOptions: RinoreOptions): ReplServer => {
   if (!repl) {
     throw new Error('Please install coffeescript module');
   }
@@ -99,11 +98,11 @@ export const start = (rinoreOptions: RinoreOptions): nodeRepl.REPLServer => {
   const replServer = repl.start(options);
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_cs', 1000);
   setupContext(replServer);
-  replaceEval(replServer);
+  const new_server = replaceEval(replServer);
   if (getMajorNodeVersion() >= 12) {
     //
   } else {
-    replaceCompleter(replServer);
+    replaceCompleter(new_server);
   }
-  return replServer;
+  return new_server;
 };

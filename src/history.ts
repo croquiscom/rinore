@@ -3,7 +3,7 @@ import os from 'os';
 import path from 'path';
 import repl from 'repl';
 
-export function setupHistory(replServer: repl.REPLServer, historyFile: string, historySize: number) {
+export function setupHistory(replServer: repl.REPLServer, historyFile: string, historySize: number): void {
   historyFile = path.join(os.homedir(), historyFile);
   try {
     const data = fs.readFileSync(historyFile, 'utf8');

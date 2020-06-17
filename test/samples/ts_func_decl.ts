@@ -1,4 +1,4 @@
-function funcTsDecl(foo: string, bar: number) {
+function funcTsDecl(foo: string, bar: number): void {
   //
 }
 

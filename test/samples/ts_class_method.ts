@@ -1,5 +1,5 @@
 class TsClass {
-  public method(foo: string, bar: number) {
+  public method(foo: string, bar: number): void {
     //
   }
 }

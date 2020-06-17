@@ -11,7 +11,7 @@ export const modules: Array<{ module: string; name: string; members: string[] }>
 
 const activeReplServers: repl.REPLServer[] = [];
 
-export function setupContext(replServer: repl.REPLServer) {
+export function setupContext(replServer: repl.REPLServer): void {
   for (const key in context) {
     if (Object.prototype.hasOwnProperty.call(context, key)) {
       replServer.context[key] = context[key];
@@ -36,7 +36,7 @@ function resetupContext() {
   }
 }
 
-export function clearContext() {
+export function clearContext(): void {
   for (const key of Object.keys(context)) {
     delete context[key];
   }
@@ -106,7 +106,7 @@ function loadModule(moduleToLoad: string, name: string, local: boolean) {
   }
 }
 
-export function loadModules(modulesToLoad: string[], options = { silent: false }) {
+export function loadModules(modulesToLoad: string[], options = { silent: false }): void {
   const cwd = process.cwd();
   for (let moduleToLoad of modulesToLoad) {
     let name = '';

@@ -63,7 +63,7 @@ export const start = (options: RinoreOptions = {}): repl.REPLServer => {
   return startInternal(options);
 };
 
-export const startCLI = async () => {
+export const startCLI = async (): Promise<void> => {
   const argv = createArgvParser().argv;
 
   loadModules((argv.require as string[]) || []);

@@ -35,7 +35,7 @@
     "diff": "^4.0.2",
     "lodash": "^4.17.15",
     "node-watch": "^0.6.4",
-    "yargs": "^15.3.1"
+    "yargs": "^15.4.1"
   },
   "devDependencies": {
     "@croquiscom/eslint-config": "^1.0.3",

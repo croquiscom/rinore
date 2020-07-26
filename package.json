@@ -40,7 +40,7 @@
   "devDependencies": {
     "@croquiscom/eslint-config": "^1.0.3",
     "@types/bluebird": "^3.5.32",
-    "@types/chai": "^4.2.11",
+    "@types/chai": "^4.2.12",
     "@types/diff": "^4.0.2",
     "@types/lodash": "^4.14.155",
     "@types/mocha": "^7.0.2",

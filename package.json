@@ -33,7 +33,7 @@
   "dependencies": {
     "bluebird": "^3.7.2",
     "diff": "^4.0.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "node-watch": "^0.6.4",
     "yargs": "^15.3.1"
   },

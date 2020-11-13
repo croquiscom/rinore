@@ -1,5 +1,5 @@
 [![npm version](https://badge.fury.io/js/rinore.svg)](https://badge.fury.io/js/rinore)
-[![Build Status](https://travis-ci.org/croquiscom/rinore.svg?branch=master)](https://travis-ci.org/croquiscom/rinore)
+![test](https://github.com/croquiscom/rinore/workflows/test/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/croquiscom/rinore/badge.svg?branch=master)](https://coveralls.io/github/croquiscom/rinore?branch=master)
 
 # Rinore

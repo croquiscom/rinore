@@ -86,7 +86,7 @@ export const startCLI = async (): Promise<void> => {
       server.close();
       process.exit();
     });
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       server.listen(argv.listen, () => {
         resolve();
       });

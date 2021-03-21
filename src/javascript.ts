@@ -1,7 +1,6 @@
 import { inspect } from 'util';
 import os from 'os';
 import nodeRepl from 'repl';
-import Bluebird from 'bluebird';
 import { setupContext } from './context';
 import { setupHistory } from './history';
 import { getMajorNodeVersion } from './utils';
@@ -17,22 +16,21 @@ function replaceEval(replServer: nodeRepl.REPLServer): ReplServer {
     if (/^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test(cmd)) {
       assignTo = RegExp.$1;
     }
-    const runner = new Bluebird((resolve, reject) => {
-      new_server.original_eval(cmd, context, filename, (error?: any, result?: any) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-    runner.then((result) => {
-      if (assignTo) {
-        context[assignTo] = result;
+    new_server.original_eval(cmd, context, filename, (error?: any, result?: any) => {
+      if (error) {
+        callback(error);
+        return;
       }
-      callback(null, result);
-    }).catch((error) => {
-      callback(error);
+      if (result?.then) {
+        result.then((r: any) => {
+          if (assignTo) {
+            context[assignTo] = r;
+          }
+          callback(null, r);
+        });
+      } else {
+        callback(null, result);
+      }
     });
   };
 

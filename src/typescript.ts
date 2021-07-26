@@ -8,10 +8,33 @@ import { getMajorNodeVersion } from './utils';
 import { RinoreOptions } from '.';
 
 const nodeModules = [
-  'assert', 'buffer', 'child_process', 'cluster', 'dgram', 'dns',
-  'domain', 'events', 'fs', 'http', 'https', 'net', 'os', 'path',
-  'punycode', 'querystring', 'readline', 'repl', 'stream', 'string_decoder',
-  'tls', 'tty', 'url', 'util', 'v8', 'vm', 'zlib',
+  'assert',
+  'buffer',
+  'child_process',
+  'cluster',
+  'dgram',
+  'dns',
+  'domain',
+  'events',
+  'fs',
+  'http',
+  'https',
+  'net',
+  'os',
+  'path',
+  'punycode',
+  'querystring',
+  'readline',
+  'repl',
+  'stream',
+  'string_decoder',
+  'tls',
+  'tty',
+  'url',
+  'util',
+  'v8',
+  'vm',
+  'zlib',
 ];
 
 let register: {
@@ -23,11 +46,17 @@ try {
   delete require.extensions['.tsx'];
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   register = require('ts-node').register();
-} catch (error) { /* ignore */ }
+} catch (error) {
+  /* ignore */
+}
 
 function createTsEval(accumulatedCode: { input: string; output: string }) {
-  return function tsEval(cmd: string, context: { [key: string]: any },
-    filename: string, callback: (error?: any, result?: any) => void): void {
+  return function tsEval(
+    cmd: string,
+    context: { [key: string]: any },
+    filename: string,
+    callback: (error?: any, result?: any) => void,
+  ): void {
     const isReplComplete = filename === 'repl_complete';
     let assignToKeyword = '';
     let assignTo = '';
@@ -113,9 +142,10 @@ function replaceCompleter(replServer: any, accumulatedCode: { input: string; out
         callback(error, [[result[1]], result[1]]);
       } else {
         replServer.eval(result[1], replServer.context, 'repl_complete', (e?: any, object?: any) => {
-          if (typeof (object) === 'function') {
-            const argsMatch = object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
-              || object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
+          if (typeof object === 'function') {
+            const argsMatch =
+              object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ||
+              object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
             replServer.output.write(os.EOL);
             replServer.output.write(`${result[1]}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
             replServer._refreshLine();

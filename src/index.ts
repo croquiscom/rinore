@@ -56,7 +56,7 @@ function startInternal(options: RinoreOptions): repl.REPLServer {
 }
 
 export const start = (options: RinoreOptions = {}): repl.REPLServer => {
-  const argv = createArgvParser().parse([]);
+  const argv = createArgvParser().parseSync([]);
   options.historyFile = options.historyFile || argv.historyFile;
   options.language = options.language || argv.language;
   options.prompt = options.prompt || argv.prompt;
@@ -64,7 +64,7 @@ export const start = (options: RinoreOptions = {}): repl.REPLServer => {
 };
 
 export const startCLI = async (): Promise<void> => {
-  const argv = createArgvParser().argv;
+  const argv = createArgvParser().parseSync();
 
   loadModules((argv.require as string[]) || []);
 
@@ -77,10 +77,9 @@ export const startCLI = async (): Promise<void> => {
         output: socket,
         prompt: argv.prompt as string,
         terminal: true,
-      })
-        .on('exit', () => {
-          socket.end();
-        });
+      }).on('exit', () => {
+        socket.end();
+      });
     });
     process.on('SIGINT', () => {
       server.close();
@@ -98,13 +97,12 @@ export const startCLI = async (): Promise<void> => {
     historyFile: argv.historyFile as string,
     language: argv.language as string,
     prompt: argv.prompt as string,
-  })
-    .on('exit', () => {
-      // exit CLI process even if there are scheduled works
-      setImmediate(() => {
-        process.exit(0);
-      });
+  }).on('exit', () => {
+    // exit CLI process even if there are scheduled works
+    setImmediate(() => {
+      process.exit(0);
     });
+  });
 };
 
 export { context } from './context';

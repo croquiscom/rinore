@@ -16,13 +16,19 @@ try {
   try {
     repl = require('coffee-script/repl');
     require('coffee-script/register');
-  } catch (error2) { /* ignore */ }
+  } catch (error2) {
+    /* ignore */
+  }
 }
 
 function replaceEval(replServer: nodeRepl.REPLServer): ReplServer {
   const new_server = Object.assign(replServer, { original_eval: replServer.eval });
-  const custom_eval: nodeRepl.REPLEval = (cmd: string, context: { [key: string]: any },
-    filename: string, callback: (error?: any, result?: any) => void) => {
+  const custom_eval: nodeRepl.REPLEval = (
+    cmd: string,
+    context: { [key: string]: any },
+    filename: string,
+    callback: (error?: any, result?: any) => void,
+  ) => {
     let assignTo = '';
     if (/^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test(cmd)) {
       assignTo = RegExp.$1;
@@ -36,14 +42,16 @@ function replaceEval(replServer: nodeRepl.REPLServer): ReplServer {
         }
       });
     });
-    runner.then((result) => {
-      if (assignTo) {
-        context[assignTo] = result;
-      }
-      callback(null, result);
-    }).catch((error) => {
-      callback(error);
-    });
+    runner
+      .then((result) => {
+        if (assignTo) {
+          context[assignTo] = result;
+        }
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error);
+      });
   };
 
   return Object.assign(new_server, { eval: custom_eval });
@@ -71,9 +79,10 @@ function replaceCompleter(replServer: any) {
         return;
       }
       replServer.eval(result[1], replServer.context, 'repl', (e?: any, object?: any) => {
-        if (typeof (object) === 'function') {
-          const argsMatch = object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
-            || object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
+        if (typeof object === 'function') {
+          const argsMatch =
+            object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ||
+            object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
           replServer.output.write(os.EOL);
           replServer.output.write(`${result[1]} \u001b[35m${argsMatch[1]}\u001b[39m\r\n`);
           replServer._refreshLine();

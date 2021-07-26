@@ -10,8 +10,12 @@ type ReplServer = nodeRepl.REPLServer & { original_eval: nodeRepl.REPLEval };
 
 function replaceEval(replServer: nodeRepl.REPLServer): ReplServer {
   const new_server = Object.assign(replServer, { original_eval: replServer.eval });
-  const custom_eval: nodeRepl.REPLEval = (cmd: string, context: { [key: string]: any },
-    filename: string, callback: (error?: any, result?: any) => void) => {
+  const custom_eval: nodeRepl.REPLEval = (
+    cmd: string,
+    context: { [key: string]: any },
+    filename: string,
+    callback: (error?: any, result?: any) => void,
+  ) => {
     let assignTo = '';
     if (/^\s*([a-zA-Z_$][0-9a-zA-Z_$]*)\s=/.test(cmd)) {
       assignTo = RegExp.$1;
@@ -60,9 +64,10 @@ function replaceCompleter(replServer: any) {
       }
       const expr = `try { ${result[1]} } catch (e) {}`;
       replServer.eval(expr, replServer.context, 'repl', (e?: any, object?: any) => {
-        if (typeof (object) === 'function') {
-          const argsMatch = object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
-            || object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
+        if (typeof object === 'function') {
+          const argsMatch =
+            object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ||
+            object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
           replServer.output.write(os.EOL);
           replServer.output.write(`${result[1]}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
           replServer._refreshLine();
@@ -89,10 +94,10 @@ export const start = (rinoreOptions: RinoreOptions): ReplServer => {
     // show argument on preview
     (Function.prototype as any)[inspect.custom] = function () {
       const argsMatch =
-        this.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
-        || this.toString().match(/^[^(]*\(\s*([^)]*)\)/m)
-        || this.constructor.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m)
-        || this.constructor.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
+        this.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ||
+        this.toString().match(/^[^(]*\(\s*([^)]*)\)/m) ||
+        this.constructor.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ||
+        this.constructor.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
 
       return `[Function: ${this.name}(${argsMatch[1]})]`;
     };

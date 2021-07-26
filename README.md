@@ -3,6 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/croquiscom/rinore/badge.svg?branch=master)](https://coveralls.io/github/croquiscom/rinore?branch=master)
 
 # Rinore
+
 > **Ri**ch **No**de.js **RE**PL
 
 Rinore was extracted from [CORMO](https://github.com/croquiscom/cormo).
@@ -11,13 +12,14 @@ CORMO console provided an interactive shell like
 or [django shell](https://docs.djangoproject.com/en/1.11/ref/django-admin/#shell).
 
 # Features
+
 Rinore has following features additional to the original Node.js REPL.
 
-* can select JavaScript or CoffeeScript or TypeScript
-* expose modules to the REPL
-* support Promise
-* show function arguments for Tab completion
-* reload local module if its content is changed
+- can select JavaScript or CoffeeScript or TypeScript
+- expose modules to the REPL
+- support Promise
+- show function arguments for Tab completion
+- reload local module if its content is changed
 
 # Usages
 
@@ -216,12 +218,12 @@ rinore> 1+1
 
 To find best REPL experience, Rinore has referred some projects:
 
-* [Rails console](http://guides.rubyonrails.org/command_line.html#rails-console)
-* [django shell](https://docs.djangoproject.com/en/1.11/ref/django-admin/#shell)
-* [local-repl](https://github.com/sloria/local-repl)
-* [IPython](https://ipython.org/)
-* [bpython](https://bpython-interpreter.org/)
-* [pry](https://github.com/pry/pry)
+- [Rails console](http://guides.rubyonrails.org/command_line.html#rails-console)
+- [django shell](https://docs.djangoproject.com/en/1.11/ref/django-admin/#shell)
+- [local-repl](https://github.com/sloria/local-repl)
+- [IPython](https://ipython.org/)
+- [bpython](https://bpython-interpreter.org/)
+- [pry](https://github.com/pry/pry)
 
 # License
 

@@ -122,12 +122,12 @@ export function loadModules(modulesToLoad: string[], options = { silent: false }
       // try to load local file first
       const localPath = path.resolve(cwd, moduleToLoad);
       loadModule(localPath, name, true);
-    } catch (error1) {
+    } catch (error1: any) {
       if (error1.code === 'MODULE_NOT_FOUND') {
         try {
           // try to load npm module (local or global)
           loadModule(moduleToLoad, name, false);
-        } catch (error2) {
+        } catch (error2: any) {
           console.log(error2.toString());
         }
       } else {

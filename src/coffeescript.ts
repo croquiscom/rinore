@@ -8,7 +8,7 @@ import { RinoreOptions } from '.';
 
 type ReplServer = nodeRepl.REPLServer & { original_eval: nodeRepl.REPLEval };
 
-let repl: any;
+let repl: { start: (options?: string | nodeRepl.ReplOptions) => nodeRepl.REPLServer };
 try {
   repl = require('coffeescript/repl');
   require('coffeescript/register');

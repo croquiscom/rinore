@@ -55,6 +55,7 @@
     "mocha": "^9.2.0",
     "nyc": "^15.1.0",
     "post-merge-install": "^0.4.0",
+    "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
     "ts-node": "^10.5.0",
     "typescript": "^4.5.5"
@@ -68,6 +69,7 @@
     ]
   },
   "lint-staged": {
-    "*.{js,ts}": "eslint"
+    "*.{js,ts}": "eslint",
+    "**/*": "prettier --write --ignore-unknown"
   }
 }

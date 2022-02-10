@@ -38,10 +38,9 @@ function testSimple(language: string, expressionList: string[], expectedList: st
     language,
     output,
   });
-  return waitOutput
-    .then(() => {
-      expect(logs).to.eql(expectedList);
-    });
+  return waitOutput.then(() => {
+    expect(logs).to.eql(expectedList);
+  });
 }
 
 export function testSimpleJavascript(expressionList: string[], expectedList: string[]): Promise<void> {
@@ -56,8 +55,12 @@ export function testSimpleTypescript(expressionList: string[], expectedList: str
   return testSimple('typescript', expressionList, expectedList);
 }
 
-function testSpawn(language: string, argumentList: string[],
-  expressionList: string[], expectedList: string[]): Promise<void> {
+function testSpawn(
+  language: string,
+  argumentList: string[],
+  expressionList: string[],
+  expectedList: string[],
+): Promise<void> {
   let waitOutputResolve: () => void;
   const waitOutput = new Promise<void>((resolve, reject) => {
     waitOutputResolve = resolve;
@@ -88,29 +91,42 @@ function testSpawn(language: string, argumentList: string[],
     }
   });
 
-  return waitOutput
-    .then(() => {
-      expect(logs).to.eql(expectedList);
-    });
+  return waitOutput.then(() => {
+    expect(logs).to.eql(expectedList);
+  });
 }
 
-export function testSpawnJavascript(argumentList: string[],
-  expressionList: string[], expectedList: string[]): Promise<void> {
+export function testSpawnJavascript(
+  argumentList: string[],
+  expressionList: string[],
+  expectedList: string[],
+): Promise<void> {
   return testSpawn('javascript', argumentList, expressionList, expectedList);
 }
 
-export function testSpawnCoffeescript(argumentList: string[],
-  expressionList: string[], expectedList: string[]): Promise<void> {
+export function testSpawnCoffeescript(
+  argumentList: string[],
+  expressionList: string[],
+  expectedList: string[],
+): Promise<void> {
   return testSpawn('coffeescript', argumentList, expressionList, expectedList);
 }
 
-export function testSpawnTypescript(argumentList: string[],
-  expressionList: string[], expectedList: string[]): Promise<void> {
+export function testSpawnTypescript(
+  argumentList: string[],
+  expressionList: string[],
+  expectedList: string[],
+): Promise<void> {
   return testSpawn('typescript', argumentList, expressionList, expectedList);
 }
 
-function testComplete(language: string, runList: string[], code: string,
-  expectedResult: [string[], string], expectedOutput: string[]) {
+function testComplete(
+  language: string,
+  runList: string[],
+  code: string,
+  expectedResult: [string[], string],
+  expectedOutput: string[],
+) {
   let waitOutputResolve: () => void;
   const waitOutput = new Promise<void>((resolve, reject) => {
     waitOutputResolve = resolve;
@@ -159,23 +175,36 @@ function testComplete(language: string, runList: string[], code: string,
           }
         });
       });
-    }).then((result) => {
+    })
+    .then((result) => {
       expect(result).to.eql(expectedResult);
       expect(logs).to.eql(expectedOutput);
     });
 }
 
-export function testCompleteJavascript(runList: string[], code: string,
-  expectedResult: [string[], string], expectedOutput: string[]): Promise<void> {
+export function testCompleteJavascript(
+  runList: string[],
+  code: string,
+  expectedResult: [string[], string],
+  expectedOutput: string[],
+): Promise<void> {
   return testComplete('javascript', runList, code, expectedResult, expectedOutput);
 }
 
-export function testCompleteCoffeescript(runList: string[], code: string,
-  expectedResult: [string[], string], expectedOutput: string[]): Promise<void> {
+export function testCompleteCoffeescript(
+  runList: string[],
+  code: string,
+  expectedResult: [string[], string],
+  expectedOutput: string[],
+): Promise<void> {
   return testComplete('coffeescript', runList, code, expectedResult, expectedOutput);
 }
 
-export function testCompleteTypescript(runList: string[], code: string,
-  expectedResult: [string[], string], expectedOutput: string[]): Promise<void> {
+export function testCompleteTypescript(
+  runList: string[],
+  code: string,
+  expectedResult: [string[], string],
+  expectedOutput: string[],
+): Promise<void> {
   return testComplete('typescript', runList, code, expectedResult, expectedOutput);
 }

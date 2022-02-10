@@ -11,10 +11,7 @@ describe('complete', () => {
   });
 
   it('own code', () => {
-    const runList: string[] = [
-      'addTwo = (v) -> v+2',
-      'addThree = (v) -> v+3',
-    ];
+    const runList: string[] = ['addTwo = (v) -> v+2', 'addThree = (v) -> v+3'];
     const code = 'ad';
     const expectedResult: [string[], string] = [['addThree', 'addTwo'], 'ad'];
     const expectedOutput: string[] = [];

@@ -14,14 +14,8 @@ describe('basic', () => {
   });
 
   it('define function and call', () => {
-    const expressionList = [
-      'sum = (a, b) => a + b',
-      'sum(3, 8)',
-    ];
-    const expectedList = [
-      '[Function: sum]',
-      '11',
-    ];
+    const expressionList = ['sum = (a, b) => a + b', 'sum(3, 8)'];
+    const expectedList = ['[Function: sum]', '11'];
     return testSimple(expressionList, expectedList);
   });
 });

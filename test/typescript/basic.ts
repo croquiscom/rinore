@@ -14,14 +14,8 @@ describe('basic', () => {
   });
 
   it('define function and call', () => {
-    const expressionList = [
-      'const sum = (a: number, b: number): number => a + b',
-      'sum(3, 8)',
-    ];
-    const expectedList = [
-      'undefined',
-      '11',
-    ];
+    const expressionList = ['const sum = (a: number, b: number): number => a + b', 'sum(3, 8)'];
+    const expectedList = ['undefined', '11'];
     return testSimple(expressionList, expectedList);
   });
 });

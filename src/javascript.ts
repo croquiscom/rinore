@@ -1,6 +1,6 @@
-import { inspect } from 'util';
 import os from 'os';
 import nodeRepl from 'repl';
+import { inspect } from 'util';
 import { setupContext } from './context';
 import { setupHistory } from './history';
 import { getMajorNodeVersion } from './utils';

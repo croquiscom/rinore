@@ -2,9 +2,9 @@ import net from 'net';
 import repl from 'repl';
 import yargs from 'yargs';
 import { start as startCoffeeScript } from './coffeescript';
+import { loadModules } from './context';
 import { start as startJavascript } from './javascript';
 import { start as startTypescript } from './typescript';
-import { loadModules } from './context';
 
 export interface RinoreOptions {
   language?: string;

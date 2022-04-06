@@ -4,6 +4,24 @@ import path from 'path';
 import repl from 'repl';
 
 export function setupHistory(replServer: repl.REPLServer, historyFile: string, historySize: number): void {
+  fs.mkdirSync(path.join(os.homedir(), '.rinore'), { mode: 0o755, recursive: true });
+
+  if (historyFile.startsWith('.rinore/')) {
+    // no change
+  } else if (historyFile.startsWith('.')) {
+    // move old style history file to new path (~/.rinore)
+    const newHistoryFile = '.rinore/' + historyFile.replace(/^\./, '');
+    if (
+      fs.existsSync(path.join(os.homedir(), historyFile)) &&
+      !fs.existsSync(path.join(os.homedir(), newHistoryFile))
+    ) {
+      fs.renameSync(path.join(os.homedir(), historyFile), path.join(os.homedir(), newHistoryFile));
+    }
+    historyFile = newHistoryFile;
+  } else {
+    historyFile = '.rinore/' + historyFile;
+  }
+
   historyFile = path.join(os.homedir(), historyFile);
   try {
     const data = fs.readFileSync(historyFile, 'utf8');

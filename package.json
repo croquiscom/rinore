@@ -1,6 +1,6 @@
 {
   "name": "rinore",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Rich Node.js REPL",
   "repository": {
     "type": "git",

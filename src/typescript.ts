@@ -190,6 +190,7 @@ function setupAccumulatedCodeInput(accumulatedCode: { input: string; output: str
 }
 
 export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!register) {
     throw new Error('Please install ts-node module');
   }

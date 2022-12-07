@@ -5,12 +5,12 @@ import * as rinore from '../src';
 
 function testSimple(language: string, expressionList: string[], expectedList: string[]): Promise<void> {
   let waitOutputResolve: () => void;
-  const waitOutput = new Promise<void>((resolve, reject) => {
+  const waitOutput = new Promise<void>((resolve) => {
     waitOutputResolve = resolve;
   });
 
   const input = new stream.Readable({
-    read(size) {
+    read() {
       // nothing to do
     },
   });
@@ -33,7 +33,7 @@ function testSimple(language: string, expressionList: string[], expectedList: st
     },
   });
 
-  const repl = rinore.start({
+  rinore.start({
     input,
     language,
     output,
@@ -62,7 +62,7 @@ function testSpawn(
   expectedList: string[],
 ): Promise<void> {
   let waitOutputResolve: () => void;
-  const waitOutput = new Promise<void>((resolve, reject) => {
+  const waitOutput = new Promise<void>((resolve) => {
     waitOutputResolve = resolve;
   });
 
@@ -128,12 +128,12 @@ function testComplete(
   expectedOutput: string[],
 ) {
   let waitOutputResolve: () => void;
-  const waitOutput = new Promise<void>((resolve, reject) => {
+  const waitOutput = new Promise<void>((resolve) => {
     waitOutputResolve = resolve;
   });
 
   const input = new stream.Readable({
-    read(size) {
+    read() {
       // nothing to do
     },
   });
@@ -167,7 +167,7 @@ function testComplete(
     .then(() => {
       logs.length = 0; // ignore logs by runList
       return new Promise((resolve, reject) => {
-        (repl as any).complete(code, (error: Error, result: [string[], string]) => {
+        (repl as any).complete(code, (error: Error | undefined, result: [string[], string]) => {
           if (error) {
             reject(error);
           } else {

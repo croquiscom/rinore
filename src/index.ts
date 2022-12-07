@@ -66,7 +66,7 @@ export const start = (options: RinoreOptions = {}): repl.REPLServer => {
 export const startCLI = async (): Promise<void> => {
   const argv = createArgvParser().parseSync();
 
-  loadModules((argv.require as string[]) || []);
+  loadModules(argv.require ?? []);
 
   if (argv.listen) {
     const server = net.createServer((socket) => {
@@ -85,7 +85,7 @@ export const startCLI = async (): Promise<void> => {
       server.close();
       process.exit();
     });
-    await new Promise<void>((resolve, reject) => {
+    await new Promise<void>((resolve) => {
       server.listen(argv.listen, () => {
         resolve();
       });

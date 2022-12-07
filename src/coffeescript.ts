@@ -94,6 +94,7 @@ function replaceCompleter(replServer: any) {
 }
 
 export const start = (rinoreOptions: RinoreOptions): ReplServer => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!repl) {
     throw new Error('Please install coffeescript module');
   }

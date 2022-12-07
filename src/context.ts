@@ -81,26 +81,30 @@ function loadModule(moduleToLoad: string, name: string, local: boolean) {
       //
     }
     watch(fileToWatch, () => {
-      console.log(`\nReloading module '${moduleToLoad}'...`);
-      for (const m of Object.keys(require.cache)) {
-        if (m.startsWith(moduleToLoad)) {
-          delete require.cache[m];
-        }
-      }
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const reloaded = require(moduleToLoad);
-      if (name === '*') {
-        for (const key in reloaded) {
-          if (Object.prototype.hasOwnProperty.call(reloaded, key)) {
-            context[key] = reloaded[key];
+      try {
+        console.log(`\nReloading module '${moduleToLoad}'...`);
+        for (const m of Object.keys(require.cache)) {
+          if (m.startsWith(moduleToLoad)) {
+            delete require.cache[m];
           }
         }
-      } else {
-        context[name] = reloaded;
-      }
-      resetupContext();
-      if (activeReplServers.length > 0) {
-        (activeReplServers[0] as any)._refreshLine();
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const reloaded = require(moduleToLoad);
+        if (name === '*') {
+          for (const key in reloaded) {
+            if (Object.prototype.hasOwnProperty.call(reloaded, key)) {
+              context[key] = reloaded[key];
+            }
+          }
+        } else {
+          context[name] = reloaded;
+        }
+        resetupContext();
+        if (activeReplServers.length > 0) {
+          (activeReplServers[0] as any)._refreshLine();
+        }
+      } catch (error) {
+        console.log(error);
       }
     });
   }

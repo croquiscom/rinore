@@ -1,0 +1,50 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: major/minor/patch
+        required: true
+        default: minor
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+          cache: npm
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Check test pass before releasing
+        run: npm test
+
+      - name: Add release commit
+        run: |
+          git config --global user.name 'croquiscom-admin'
+          git config --global user.email 'admin@croquis.com'
+          npm version --no-git-tag-version ${{ github.event.inputs.version }}
+          npm run build
+          git add package.json package-lock.json lib
+          AUTHOR="${{ github.event.sender.login }} <${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com>"
+          VERSION=$(node -p "require('./package.json').version")
+          git commit -m "v$VERSION" --author "$AUTHOR"
+          git tag v$VERSION
+          git push
+          git push --tags
+
+      - name: Release version
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

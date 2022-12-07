@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
     "target": "es2015",
-    "module": "commonjs",
-    "declaration": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
     "strict": true,
+    "stripInternal": true,
+    "declaration": true,
+    "module": "CommonJS",
     "esModuleInterop": true
   }
 }

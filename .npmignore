@@ -1,8 +1,8 @@
-node_modules/
+node_modules
 *.tgz
-
 .npmignore
 tsconfig.json
 .editorconfig
 tslint.json
-src/
+src
+test

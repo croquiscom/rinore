@@ -57,7 +57,7 @@ function loadModule(moduleToLoad: string, name: string, local: boolean) {
     name = camelCase(path.parse(moduleToLoad).name);
   }
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const loaded = require(moduleToLoad);
+  const loaded = require(require.resolve(moduleToLoad, { paths: [process.cwd()] }));
   const members: string[] = [];
   if (name === '*') {
     for (const key in loaded) {

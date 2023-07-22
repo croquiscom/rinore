@@ -57,8 +57,11 @@ function startInternal(options: RinoreOptions): repl.REPLServer {
 
 export const start = (options: RinoreOptions = {}): repl.REPLServer => {
   const argv = createArgvParser().parseSync([]);
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   options.historyFile = options.historyFile || argv.historyFile;
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   options.language = options.language || argv.language;
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   options.prompt = options.prompt || argv.prompt;
   return startInternal(options);
 };
@@ -71,11 +74,11 @@ export const startCLI = async (): Promise<void> => {
   if (argv.listen) {
     const server = net.createServer((socket) => {
       start({
-        historyFile: argv.historyFile as string,
+        historyFile: argv.historyFile,
         input: socket,
-        language: argv.language as string,
+        language: argv.language,
         output: socket,
-        prompt: argv.prompt as string,
+        prompt: argv.prompt,
         terminal: true,
       }).on('exit', () => {
         socket.end();
@@ -94,9 +97,9 @@ export const startCLI = async (): Promise<void> => {
   }
 
   startInternal({
-    historyFile: argv.historyFile as string,
-    language: argv.language as string,
-    prompt: argv.prompt as string,
+    historyFile: argv.historyFile,
+    language: argv.language,
+    prompt: argv.prompt,
   }).on('exit', () => {
     // exit CLI process even if there are scheduled works
     setImmediate(() => {

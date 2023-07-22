@@ -6,7 +6,7 @@ import { camelCase } from 'lodash';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const watch = require('node-watch');
 
-export const context: { [key: string]: any } = {};
+export const context: Record<string, any> = {};
 export const modules: Array<{ module: string; name: string; members: string[] }> = [];
 
 const activeReplServers: repl.REPLServer[] = [];

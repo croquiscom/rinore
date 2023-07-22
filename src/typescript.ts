@@ -53,7 +53,7 @@ try {
 function createTsEval(accumulatedCode: { input: string; output: string }) {
   return function tsEval(
     cmd: string,
-    context: { [key: string]: any },
+    context: Record<string, any>,
     filename: string,
     callback: (error?: any, result?: any) => void,
   ): void {
@@ -198,11 +198,12 @@ export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
     input: '',
     output: '"use strict";\n',
   };
-  const options: { [key: string]: any } = {
+  const options: Record<string, any> = {
     eval: createTsEval(accumulatedCode),
     historySize: 1000,
     input: rinoreOptions.input,
     output: rinoreOptions.output,
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     prompt: rinoreOptions.prompt || 'rinore> ',
     terminal: rinoreOptions.terminal,
   };
@@ -225,6 +226,7 @@ export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
       replServer.displayPrompt();
     },
   });
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_ts', 1000);
   setupContext(replServer);
   if (getMajorNodeVersion() >= 12) {

@@ -25,7 +25,7 @@ function replaceEval(replServer: nodeRepl.REPLServer): ReplServer {
   const new_server = Object.assign(replServer, { original_eval: replServer.eval });
   const custom_eval: nodeRepl.REPLEval = (
     cmd: string,
-    context: { [key: string]: any },
+    context: Record<string, any>,
     filename: string,
     callback: (error?: any, result?: any) => void,
   ) => {
@@ -98,14 +98,16 @@ export const start = (rinoreOptions: RinoreOptions): ReplServer => {
   if (!repl) {
     throw new Error('Please install coffeescript module');
   }
-  const options: { [key: string]: any } = {
+  const options: Record<string, any> = {
     historyFile: null,
     input: rinoreOptions.input,
     output: rinoreOptions.output,
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     prompt: rinoreOptions.prompt || 'rinore> ',
     terminal: rinoreOptions.terminal,
   };
   const replServer = repl.start(options);
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_cs', 1000);
   setupContext(replServer);
   const new_server = replaceEval(replServer);

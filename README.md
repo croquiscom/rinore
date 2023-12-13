@@ -1,6 +1,6 @@
 [![npm version](https://badge.fury.io/js/rinore.svg)](https://badge.fury.io/js/rinore)
 ![test](https://github.com/croquiscom/rinore/workflows/test/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/croquiscom/rinore/badge.svg?branch=master)](https://coveralls.io/github/croquiscom/rinore?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/croquiscom/rinore/badge.svg?branch=main)](https://coveralls.io/github/croquiscom/rinore?branch=main)
 
 # Rinore
 
@@ -227,4 +227,4 @@ To find best REPL experience, Rinore has referred some projects:
 
 # License
 
-MIT licenses. See [LICENSE](https://github.com/croquiscom/rinore/blob/master/LICENSE) for more details.
+MIT licenses. See [LICENSE](https://github.com/croquiscom/rinore/blob/main/LICENSE) for more details.

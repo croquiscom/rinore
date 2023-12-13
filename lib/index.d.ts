@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import repl from 'repl';
 export interface RinoreOptions {
     language?: string;

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 describe('coffeescript', () => {
   require('./coffeescript/basic');
   require('./coffeescript/require');

@@ -20,9 +20,9 @@
   "scripts": {
     "prepublishOnly": "npm run lint && npm run build",
     "build": "rimraf lib && tsc -p src/tsconfig.build.json",
-    "lint": "eslint --ext .js,.ts .",
+    "lint": "eslint .",
     "test:type": "tsc --noEmit",
-    "test:unit": "mocha --require ts-node/register/transpile-only -t 8000 --exit 'test/*.ts'",
+    "test:unit": "RINORE_UNIT_TEST=true mocha --require ts-node/register/transpile-only -t 8000 --exit 'test/*.ts'",
     "test": "npm run test:type && npm run lint && npm run test:unit --",
     "test:cov": "nyc npm run test",
     "prepare": "husky install"
@@ -41,7 +41,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@croquiscom/eslint-config": "^2.7.0",
+    "@croquiscom/eslint-config": "^3.0.0",
     "@types/bluebird": "^3.5.42",
     "@types/chai": "^4.3.11",
     "@types/diff": "^5.2.1",
@@ -52,7 +52,7 @@
     "chai": "^4.3.10",
     "coffeescript": "^2.7.0",
     "coveralls": "^3.1.1",
-    "eslint": "^8.55.0",
+    "eslint": "^9.13.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.6",
     "mocha": "^10.2.0",
@@ -61,7 +61,7 @@
     "prettier": "^3.3.2",
     "rimraf": "^5.0.7",
     "ts-node": "10.7",
-    "typescript": "^5.4.5"
+    "typescript": "^5.6.3"
   },
   "nyc": {
     "extension": [

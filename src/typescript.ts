@@ -41,13 +41,18 @@ let register: {
   compile(code: string, fileName: string, lineOffset?: number): string;
   getTypeInfo(code: string, fileName: string, position: number): { name: string; comment: string };
 };
-try {
-  delete require.extensions['.ts'];
-  delete require.extensions['.tsx'];
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  register = require('ts-node').register();
-} catch (error) {
-  /* ignore */
+if (process.env.RINORE_UNIT_TEST !== 'true') {
+  try {
+    delete require.extensions['.ts'];
+    delete require.extensions['.tsx'];
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    register = require('ts-node').register();
+  } catch {
+    /* ignore */
+  }
+} else {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  register = require('ts-node').create();
 }
 
 function createTsEval(accumulatedCode: { input: string; output: string }) {
@@ -166,7 +171,7 @@ function setupAccumulatedCodeInput(accumulatedCode: { input: string; output: str
     try {
       const importExpr = `import _test from '${rinoreModule.module}'\n`;
       register.compile(accumulatedCode.input + importExpr, '[eval].ts');
-    } catch (error) {
+    } catch {
       // if import statement fails, skip to declare
       continue;
     }

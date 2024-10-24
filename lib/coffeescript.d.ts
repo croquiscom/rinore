@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import nodeRepl from 'repl';
 import { RinoreOptions } from '.';
 type ReplServer = nodeRepl.REPLServer & {

@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import repl from 'repl';
 export declare const context: Record<string, any>;
 export declare const modules: Array<{

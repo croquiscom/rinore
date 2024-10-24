@@ -3,7 +3,7 @@ import path from 'path';
 import repl from 'repl';
 import { camelCase } from 'lodash';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const watch = require('node-watch');
 
 export const context: Record<string, any> = {};
@@ -56,7 +56,7 @@ function loadModule(moduleToLoad: string, name: string, local: boolean) {
   if (!name) {
     name = camelCase(path.parse(moduleToLoad).name);
   }
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const loaded = require(require.resolve(moduleToLoad, { paths: [process.cwd()] }));
   const members: string[] = [];
   if (name === '*') {
@@ -77,7 +77,7 @@ function loadModule(moduleToLoad: string, name: string, local: boolean) {
       if (fs.lstatSync(moduleToLoad).isDirectory()) {
         fileToWatch = moduleToLoad;
       }
-    } catch (error) {
+    } catch {
       //
     }
     watch(fileToWatch, () => {
@@ -88,7 +88,7 @@ function loadModule(moduleToLoad: string, name: string, local: boolean) {
             delete require.cache[m];
           }
         }
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const reloaded = require(moduleToLoad);
         if (name === '*') {
           for (const key in reloaded) {

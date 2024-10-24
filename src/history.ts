@@ -37,7 +37,7 @@ export function setupHistory(replServer: repl.REPLServer, historyFile: string, h
       histories.reverse();
       (replServer as any).history = histories;
     }
-  } catch (error) {
+  } catch {
     // can not read historyFile, just skip
   }
 

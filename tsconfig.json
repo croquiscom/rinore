@@ -8,6 +8,7 @@
     "stripInternal": true,
     "declaration": true,
     "module": "CommonJS",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowJs": true
   }
 }

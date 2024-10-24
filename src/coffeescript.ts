@@ -10,13 +10,17 @@ type ReplServer = nodeRepl.REPLServer & { original_eval: nodeRepl.REPLEval };
 
 let repl: { start: (options?: string | nodeRepl.ReplOptions) => nodeRepl.REPLServer };
 try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   repl = require('coffeescript/repl');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require('coffeescript/register');
-} catch (error1) {
+} catch {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     repl = require('coffee-script/repl');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('coffee-script/register');
-  } catch (error2) {
+  } catch {
     /* ignore */
   }
 }

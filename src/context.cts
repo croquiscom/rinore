@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import repl from 'repl';
-import { camelCase } from 'lodash';
+import _ from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const watch = require('node-watch');
@@ -52,12 +52,14 @@ function splitModuleName(nodeModule: string): [string, string] {
   }
 }
 
-function loadModule(moduleToLoad: string, name: string, local: boolean) {
+async function loadModule(moduleToLoad: string, name: string, local: boolean) {
   if (!name) {
-    name = camelCase(path.parse(moduleToLoad).name);
+    name = _.camelCase(path.parse(moduleToLoad).name);
   }
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const loaded = require(require.resolve(moduleToLoad, { paths: [process.cwd()] }));
+  let loaded = await import(require.resolve(moduleToLoad, { paths: [process.cwd()] }));
+  if (loaded.default) {
+    loaded = loaded.default;
+  }
   const members: string[] = [];
   if (name === '*') {
     for (const key in loaded) {
@@ -110,7 +112,7 @@ function loadModule(moduleToLoad: string, name: string, local: boolean) {
   }
 }
 
-export function loadModules(modulesToLoad: string[], options = { silent: false }): void {
+export async function loadModules(modulesToLoad: string[], options = { silent: false }): Promise<void> {
   const cwd = process.cwd();
   for (let moduleToLoad of modulesToLoad) {
     let name = '';
@@ -125,12 +127,12 @@ export function loadModules(modulesToLoad: string[], options = { silent: false }
     try {
       // try to load local file first
       const localPath = path.resolve(cwd, moduleToLoad);
-      loadModule(localPath, name, true);
+      await loadModule(localPath, name, true);
     } catch (error1: any) {
       if (error1.code === 'MODULE_NOT_FOUND') {
         try {
           // try to load npm module (local or global)
-          loadModule(moduleToLoad, name, false);
+          await loadModule(moduleToLoad, name, false);
         } catch (error2: any) {
           console.log(error2.toString());
         }

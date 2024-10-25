@@ -1,28 +1,21 @@
 import os from 'os';
 import nodeRepl from 'repl';
 import Bluebird from 'bluebird';
-import { setupContext } from './context';
-import { setupHistory } from './history';
-import { RinoreOptions } from './types';
-import { getMajorNodeVersion } from './utils';
+import rinore_context from './context.cjs';
+import { setupHistory } from './history.js';
+import { RinoreOptions } from './types.js';
+import { getMajorNodeVersion } from './utils.js';
 
 type ReplServer = nodeRepl.REPLServer & { original_eval: nodeRepl.REPLEval };
 
 let repl: { start: (options?: string | nodeRepl.ReplOptions) => nodeRepl.REPLServer };
 try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  repl = require('coffeescript/repl');
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('coffeescript/register');
+  // @ts-expect-error no type definitions
+  repl = await import('coffeescript/repl.js');
+  // @ts-expect-error no type definitions
+  await import('coffeescript/register.js');
 } catch {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    repl = require('coffee-script/repl');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('coffee-script/register');
-  } catch {
-    /* ignore */
-  }
+  /* ignore */
 }
 
 function replaceEval(replServer: nodeRepl.REPLServer): ReplServer {
@@ -113,7 +106,7 @@ export const start = (rinoreOptions: RinoreOptions): ReplServer => {
   const replServer = repl.start(options);
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_cs', 1000);
-  setupContext(replServer);
+  rinore_context.setupContext(replServer);
   const new_server = replaceEval(replServer);
   if (getMajorNodeVersion() >= 12) {
     //

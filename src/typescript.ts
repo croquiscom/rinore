@@ -2,10 +2,10 @@ import os from 'os';
 import repl from 'repl';
 import vm from 'vm';
 import { diffLines } from 'diff';
-import { context as rinoreContext, modules as rinoreModules, setupContext } from './context';
-import { setupHistory } from './history';
-import { RinoreOptions } from './types';
-import { getMajorNodeVersion } from './utils';
+import rinore_context from './context.cjs';
+import { setupHistory } from './history.js';
+import { RinoreOptions } from './types.js';
+import { getMajorNodeVersion } from './utils.js';
 
 const nodeModules = [
   'assert',
@@ -43,16 +43,12 @@ let register: {
 };
 if (process.env.RINORE_UNIT_TEST !== 'true') {
   try {
-    delete require.extensions['.ts'];
-    delete require.extensions['.tsx'];
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    register = require('ts-node').register();
+    register = (await import('ts-node')).register();
   } catch {
     /* ignore */
   }
 } else {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  register = require('ts-node').create();
+  register = (await import('ts-node')).default.create();
 }
 
 function createTsEval(accumulatedCode: { input: string; output: string }) {
@@ -74,7 +70,7 @@ function createTsEval(accumulatedCode: { input: string; output: string }) {
     }
     let jsCode: string;
     try {
-      jsCode = register.compile(accumulatedCode.input + cmd, '[eval].ts');
+      jsCode = register.compile(accumulatedCode.input + cmd, '[eval].cts');
     } catch (error) {
       callback(error);
       return;
@@ -82,7 +78,7 @@ function createTsEval(accumulatedCode: { input: string; output: string }) {
     if (assignTo) {
       // get type of resolved result
       const input = `${accumulatedCode.input}const __rinore = ${cmd}__rinore`;
-      const typeInfo = register.getTypeInfo(input, '[eval].ts', input.length);
+      const typeInfo = register.getTypeInfo(input, '[eval].cts', input.length);
       if (/Promise<(.*)>/.test(typeInfo.name)) {
         assignToType = RegExp.$1;
       }
@@ -167,7 +163,7 @@ function setupAccumulatedCodeInput(accumulatedCode: { input: string; output: str
   for (const nodeModule of nodeModules) {
     accumulatedCode.input += `import ${nodeModule} from '${nodeModule}'\n`;
   }
-  for (const rinoreModule of rinoreModules) {
+  for (const rinoreModule of rinore_context.modules) {
     try {
       const importExpr = `import _test from '${rinoreModule.module}'\n`;
       register.compile(accumulatedCode.input + importExpr, '[eval].ts');
@@ -183,8 +179,8 @@ function setupAccumulatedCodeInput(accumulatedCode: { input: string; output: str
       accumulatedCode.input += `import ${rinoreModule.name} from '${rinoreModule.module}'\n`;
     }
   }
-  for (const key in rinoreContext) {
-    if (Object.prototype.hasOwnProperty.call(rinoreContext, key)) {
+  for (const key in rinore_context.context) {
+    if (Object.prototype.hasOwnProperty.call(rinore_context.context, key)) {
       if (imported.indexOf(key) < 0) {
         accumulatedCode.input += `declare var ${key}: any;\n`;
       }
@@ -233,7 +229,7 @@ export const start = (rinoreOptions: RinoreOptions): repl.REPLServer => {
   });
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_ts', 1000);
-  setupContext(replServer);
+  rinore_context.setupContext(replServer);
   if (getMajorNodeVersion() >= 12) {
     //
   } else {

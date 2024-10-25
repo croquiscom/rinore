@@ -1,7 +1,9 @@
 import { spawn } from 'child_process';
+import path from 'path';
 import stream from 'stream';
+import url from 'url';
 import { expect } from 'chai';
-import * as rinore from '../src';
+import * as rinore from '../src/index.js';
 
 function testSimple(language: string, expressionList: string[], expectedList: string[]): Promise<void> {
   let waitOutputResolve: () => void;
@@ -68,8 +70,9 @@ function testSpawn(
 
   argumentList.push('-l', language);
   const logs: string[] = [];
-  const child = spawn(`${__dirname}/../bin/rinore`, argumentList, {
-    cwd: `${__dirname}/${language}`,
+  const dirname = path.dirname(url.fileURLToPath(import.meta.url));
+  const child = spawn(`${dirname}/../bin/rinore`, argumentList, {
+    cwd: `${dirname}/${language}`,
     env: Object.assign({}, process.env, { NODE_ENV: 'test' }),
   });
   child.stdout.setEncoding('utf8');
@@ -89,6 +92,10 @@ function testSpawn(
         }
       }
     }
+  });
+  child.stderr.setEncoding('utf8');
+  child.stderr.on('data', (_data: string) => {
+    // console.log(data);
   });
 
   return waitOutput.then(() => {

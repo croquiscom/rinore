@@ -1,8 +1,11 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
+import case_basic from './typescript/basic.js';
+import case_complete from './typescript/complete.js';
+import case_promise from './typescript/promise.js';
+import case_require from './typescript/require.js';
 
 describe('typescript', () => {
-  require('./typescript/basic');
-  require('./typescript/require');
-  require('./typescript/promise');
-  require('./typescript/complete');
+  case_basic();
+  case_require();
+  case_promise();
+  case_complete();
 });

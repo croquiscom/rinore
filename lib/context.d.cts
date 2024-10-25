@@ -9,4 +9,4 @@ export declare function setupContext(replServer: repl.REPLServer): void;
 export declare function clearContext(): void;
 export declare function loadModules(modulesToLoad: string[], options?: {
     silent: boolean;
-}): void;
+}): Promise<void>;

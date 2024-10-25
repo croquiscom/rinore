@@ -2,6 +2,7 @@
   "name": "rinore",
   "version": "1.4.0",
   "description": "Rich Node.js REPL",
+  "type": "module",
   "engines": {
     "node": ">=16"
   },
@@ -22,10 +23,10 @@
     "build": "rimraf lib && tsc -p src/tsconfig.build.json",
     "lint": "eslint .",
     "test:type": "tsc --noEmit",
-    "test:unit": "RINORE_UNIT_TEST=true mocha --require ts-node/register/transpile-only -t 8000 --exit 'test/*.ts'",
+    "test:unit": "RINORE_UNIT_TEST=true mocha -n loader=ts-node/esm/transpile-only --require ts-node/register/transpile-only -t 8000 --exit ./test/*.ts",
     "test": "npm run test:type && npm run lint && npm run test:unit --",
     "test:cov": "nyc npm run test",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "bin": {
     "rinore": "./bin/rinore",
@@ -35,7 +36,7 @@
   "types": "./lib/index.d.ts",
   "dependencies": {
     "bluebird": "^3.7.2",
-    "diff": "^5.2.0",
+    "diff": "^7.0.0",
     "lodash": "^4.17.21",
     "node-watch": "^0.7.4",
     "yargs": "^17.7.2"
@@ -47,9 +48,9 @@
     "@types/diff": "^5.2.3",
     "@types/lodash": "^4.17.12",
     "@types/mocha": "^10.0.9",
-    "@types/node": "^22.7.9",
+    "@types/node": "^22.8.0",
     "@types/yargs": "^17.0.33",
-    "chai": "^4.3.10",
+    "chai": "^5.1.2",
     "coffeescript": "^2.7.0",
     "coveralls": "^3.1.1",
     "eslint": "^9.13.0",

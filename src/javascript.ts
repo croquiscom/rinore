@@ -1,10 +1,10 @@
 import os from 'os';
 import nodeRepl from 'repl';
 import { inspect } from 'util';
-import { setupContext } from './context';
-import { setupHistory } from './history';
-import { RinoreOptions } from './types';
-import { getMajorNodeVersion } from './utils';
+import rinore_context from './context.cjs';
+import { setupHistory } from './history.js';
+import { RinoreOptions } from './types.js';
+import { getMajorNodeVersion } from './utils.js';
 
 type ReplServer = nodeRepl.REPLServer & { original_eval: nodeRepl.REPLEval };
 
@@ -90,7 +90,7 @@ export const start = (rinoreOptions: RinoreOptions): ReplServer => {
   const replServer = nodeRepl.start(options);
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   setupHistory(replServer, rinoreOptions.historyFile || '.rinore_history_js', 1000);
-  setupContext(replServer);
+  rinore_context.setupContext(replServer);
   const new_server = replaceEval(replServer);
   if (getMajorNodeVersion() >= 12) {
     // show argument on preview

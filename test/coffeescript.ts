@@ -1,8 +1,11 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
+import case_basic from './coffeescript/basic.js';
+import case_complete from './coffeescript/complete.js';
+import case_promise from './coffeescript/promise.js';
+import case_require from './coffeescript/require.js';
 
 describe('coffeescript', () => {
-  require('./coffeescript/basic');
-  require('./coffeescript/require');
-  require('./coffeescript/promise');
-  require('./coffeescript/complete');
+  case_basic();
+  case_require();
+  case_promise();
+  case_complete();
 });

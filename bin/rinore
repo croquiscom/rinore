@@ -1,7 +1,2 @@
 #!/usr/bin/env node
-if (process.env.NODE_ENV === 'test') {
-  require('ts-node/register');
-  require('../src').startCLI();
-} else {
-  require('../lib').startCLI();
-}
+import('./rinore.mjs');

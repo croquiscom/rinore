@@ -1,14 +1,14 @@
 import net from 'net';
 import repl from 'repl';
 import yargs from 'yargs';
-import { start as startCoffeeScript } from './coffeescript';
-import { loadModules } from './context';
-import { start as startJavascript } from './javascript';
-import { RinoreOptions } from './types';
-import { start as startTypescript } from './typescript';
+import { start as startCoffeeScript } from './coffeescript.js';
+import rinore_context from './context.cjs';
+import { start as startJavascript } from './javascript.js';
+import { RinoreOptions } from './types.js';
+import { start as startTypescript } from './typescript.js';
 
 function createArgvParser() {
-  return yargs
+  return yargs()
     .option('l', {
       description: 'REPL language. javascript or coffeescript or typescript. The default is javascript',
       string: true,
@@ -59,9 +59,9 @@ export const start = (options: RinoreOptions = {}): repl.REPLServer => {
 };
 
 export const startCLI = async (): Promise<void> => {
-  const argv = createArgvParser().parseSync();
+  const argv = createArgvParser().parseSync(process.argv.slice(2));
 
-  loadModules(argv.require ?? []);
+  await rinore_context.loadModules(argv.require ?? []);
 
   if (argv.listen) {
     const server = net.createServer((socket) => {
@@ -100,4 +100,5 @@ export const startCLI = async (): Promise<void> => {
   });
 };
 
-export { context } from './context';
+const context = rinore_context.context;
+export { context };

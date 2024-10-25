@@ -4,16 +4,8 @@ import yargs from 'yargs';
 import { start as startCoffeeScript } from './coffeescript';
 import { loadModules } from './context';
 import { start as startJavascript } from './javascript';
+import { RinoreOptions } from './types';
 import { start as startTypescript } from './typescript';
-
-export interface RinoreOptions {
-  language?: string;
-  prompt?: string;
-  input?: NodeJS.ReadableStream;
-  output?: NodeJS.WritableStream;
-  terminal?: boolean;
-  historyFile?: string;
-}
 
 function createArgvParser() {
   return yargs

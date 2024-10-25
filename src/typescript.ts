@@ -4,8 +4,8 @@ import vm from 'vm';
 import { diffLines } from 'diff';
 import { context as rinoreContext, modules as rinoreModules, setupContext } from './context';
 import { setupHistory } from './history';
+import { RinoreOptions } from './types';
 import { getMajorNodeVersion } from './utils';
-import { RinoreOptions } from '.';
 
 const nodeModules = [
   'assert',

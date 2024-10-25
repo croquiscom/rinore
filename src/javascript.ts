@@ -3,8 +3,8 @@ import nodeRepl from 'repl';
 import { inspect } from 'util';
 import { setupContext } from './context';
 import { setupHistory } from './history';
+import { RinoreOptions } from './types';
 import { getMajorNodeVersion } from './utils';
-import { RinoreOptions } from '.';
 
 type ReplServer = nodeRepl.REPLServer & { original_eval: nodeRepl.REPLEval };
 

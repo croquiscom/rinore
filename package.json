@@ -25,7 +25,7 @@
     "test:type": "tsc --noEmit",
     "test:unit": "RINORE_UNIT_TEST=true mocha -n loader=ts-node/esm/transpile-only --require ts-node/register/transpile-only -t 8000 --exit ./test/*.ts",
     "test": "npm run test:type && npm run lint && npm run test:unit --",
-    "test:cov": "nyc npm run test",
+    "test:cov": "c8 npm run test",
     "prepare": "husky"
   },
   "bin": {
@@ -50,6 +50,7 @@
     "@types/mocha": "^10.0.9",
     "@types/node": "^22.8.0",
     "@types/yargs": "^17.0.33",
+    "c8": "^10.1.2",
     "chai": "^5.1.2",
     "coffeescript": "^2.7.0",
     "coveralls": "^3.1.1",
@@ -57,14 +58,13 @@
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "mocha": "^10.7.3",
-    "nyc": "^17.1.0",
     "post-merge-install": "^0.4.0",
     "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   },
-  "nyc": {
+  "c8": {
     "extension": [
       ".ts"
     ],

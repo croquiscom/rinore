@@ -1,6 +1,6 @@
 {
   "name": "rinore",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "Rich Node.js REPL",
   "type": "module",
   "engines": {

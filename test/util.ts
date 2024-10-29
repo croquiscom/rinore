@@ -1,7 +1,5 @@
 import { spawn } from 'child_process';
-import path from 'path';
 import stream from 'stream';
-import url from 'url';
 import { expect } from 'chai';
 import * as rinore from '../src/index.js';
 
@@ -70,9 +68,8 @@ function testSpawn(
 
   argumentList.push('-l', language);
   const logs: string[] = [];
-  const dirname = path.dirname(url.fileURLToPath(import.meta.url));
-  const child = spawn(`${dirname}/../bin/rinore`, argumentList, {
-    cwd: `${dirname}/${language}`,
+  const child = spawn(`${import.meta.dirname}/../bin/rinore`, argumentList, {
+    cwd: `${import.meta.dirname}/${language}`,
     env: Object.assign({}, process.env, { NODE_ENV: 'test' }),
   });
   child.stdout.setEncoding('utf8');

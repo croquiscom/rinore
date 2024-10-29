@@ -48,7 +48,7 @@ if (process.env.RINORE_UNIT_TEST !== 'true') {
     /* ignore */
   }
 } else {
-  register = (await import('ts-node')).default.create();
+  register = (await import('ts-node')).create();
 }
 
 function createTsEval(accumulatedCode: { input: string; output: string }) {

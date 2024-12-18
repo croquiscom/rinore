@@ -56,7 +56,26 @@ async function loadModule(moduleToLoad: string, name: string, local: boolean) {
   if (!name) {
     name = _.camelCase(path.parse(moduleToLoad).name);
   }
-  let loaded = await import(require.resolve(moduleToLoad, { paths: [process.cwd()] }));
+  let loaded;
+  try {
+    loaded = await import(require.resolve(moduleToLoad, { paths: [process.cwd()] }));
+  } catch (e: any) {
+    if (local && e.code === 'MODULE_NOT_FOUND' && fs.lstatSync(moduleToLoad).isDirectory()) {
+      loaded = {};
+      // load every file in the directory
+      const files = fs.readdirSync(moduleToLoad);
+      for (const file of files) {
+        if (file.endsWith('.ts') || file.endsWith('.js')) {
+          loaded = {
+            ...loaded,
+            ...(await import(require.resolve(`${moduleToLoad}/${file}`, { paths: [process.cwd()] }))),
+          };
+        }
+      }
+    } else {
+      throw e;
+    }
+  }
   if (loaded.default) {
     loaded = loaded.default;
   }
@@ -74,41 +93,64 @@ async function loadModule(moduleToLoad: string, name: string, local: boolean) {
   modules.push({ module: moduleToLoad, name, members });
 
   if (local) {
-    let fileToWatch = require.resolve(moduleToLoad);
+    let fileToWatch: string | undefined;
     try {
       if (fs.lstatSync(moduleToLoad).isDirectory()) {
         fileToWatch = moduleToLoad;
+      } else {
+        fileToWatch = require.resolve(moduleToLoad);
       }
     } catch {
       //
     }
-    watch(fileToWatch, () => {
-      try {
-        console.log(`\nReloading module '${moduleToLoad}'...`);
-        for (const m of Object.keys(require.cache)) {
-          if (m.startsWith(moduleToLoad)) {
-            delete require.cache[m];
-          }
-        }
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const reloaded = require(moduleToLoad);
-        if (name === '*') {
-          for (const key in reloaded) {
-            if (Object.prototype.hasOwnProperty.call(reloaded, key)) {
-              context[key] = reloaded[key];
+    if (fileToWatch) {
+      watch(fileToWatch, () => {
+        try {
+          console.log(`\nReloading module '${moduleToLoad}'...`);
+          for (const m of Object.keys(require.cache)) {
+            if (m.startsWith(moduleToLoad)) {
+              delete require.cache[m];
             }
           }
-        } else {
-          context[name] = reloaded;
+          let reloaded: Record<string, any> = {};
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            reloaded = require(moduleToLoad);
+          } catch (e: any) {
+            if (e.code === 'MODULE_NOT_FOUND' && fs.lstatSync(moduleToLoad).isDirectory()) {
+              // load every file in the directory
+              const files = fs.readdirSync(moduleToLoad);
+              for (const file of files) {
+                if (file.endsWith('.ts') || file.endsWith('.js')) {
+                  reloaded = {
+                    ...reloaded,
+                    // eslint-disable-next-line @typescript-eslint/no-require-imports
+                    ...require(`${moduleToLoad}/${file}`),
+                  };
+                }
+              }
+            } else {
+              throw e;
+            }
+          }
+          if (name === '*') {
+            for (const key in reloaded) {
+              if (Object.prototype.hasOwnProperty.call(reloaded, key)) {
+                context[key] = reloaded[key];
+              }
+            }
+          } else {
+            context[name] = reloaded;
+          }
+          resetupContext();
+          if (activeReplServers.length > 0) {
+            (activeReplServers[0] as any)._refreshLine();
+          }
+        } catch (error) {
+          console.log(error);
         }
-        resetupContext();
-        if (activeReplServers.length > 0) {
-          (activeReplServers[0] as any)._refreshLine();
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    });
+      });
+    }
   }
 }
 

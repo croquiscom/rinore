@@ -60,7 +60,12 @@ async function loadModule(moduleToLoad: string, name: string, local: boolean) {
   try {
     loaded = await import(require.resolve(moduleToLoad, { paths: [process.cwd()] }));
   } catch (e: any) {
-    if (local && e.code === 'MODULE_NOT_FOUND' && fs.lstatSync(moduleToLoad).isDirectory()) {
+    if (
+      local &&
+      e.code === 'MODULE_NOT_FOUND' &&
+      fs.existsSync(moduleToLoad) &&
+      fs.lstatSync(moduleToLoad).isDirectory()
+    ) {
       loaded = {};
       // load every file in the directory
       const files = fs.readdirSync(moduleToLoad);

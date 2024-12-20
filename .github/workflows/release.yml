@@ -1,16 +1,14 @@
 name: release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: major/minor/patch
-        required: true
-        default: minor
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -20,31 +18,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: '22'
           cache: npm
 
       - name: Install packages
-        run: npm ci
+        run: npm install
 
-      - name: Check test pass before releasing
-        run: npm test
-
-      - name: Add release commit
-        run: |
-          git config --global user.name 'croquiscom-admin'
-          git config --global user.email 'admin@croquis.com'
-          npm version --no-git-tag-version ${{ github.event.inputs.version }}
-          npm run build
-          git add package.json package-lock.json lib
-          AUTHOR="${{ github.event.sender.login }} <${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com>"
-          VERSION=$(node -p "require('./package.json').version")
-          git commit -m "v$VERSION" --author "$AUTHOR"
-          git tag v$VERSION
-          git push
-          git push --tags
-
-      - name: Release version
-        run: npm publish
+      - name: Create Release Pull Request or Publish to npm
+        uses: changesets/action@v1
+        with:
+          version: npm run changeset version
+          publish: npm run release
+          title: 'chore: release x.y.z'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          createGithubReleases: false

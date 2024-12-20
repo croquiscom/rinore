@@ -1,0 +1,5 @@
+---
+'rinore': minor
+---
+
+Adopt changesets

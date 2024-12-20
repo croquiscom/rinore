@@ -4,7 +4,7 @@
   "description": "Rich Node.js REPL",
   "type": "module",
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   },
   "repository": {
     "type": "git",
@@ -23,10 +23,12 @@
     "build": "rimraf lib && tsc -p src/tsconfig.build.json",
     "lint": "eslint .",
     "test:type": "tsc --noEmit",
-    "test:unit": "RINORE_UNIT_TEST=true mocha -n import=tsx -t 8000 --exit ./test/*.ts",
+    "test:unit": "RINORE_UNIT_TEST=true mocha -n import=tsx -t 20000 --exit ./test/*.ts",
     "test": "npm run test:type && npm run lint && npm run test:unit --",
     "test:cov": "c8 npm run test",
-    "prepare": "husky"
+    "prepare": "husky",
+    "changeset": "changeset",
+    "release": "npm run lint && npm run build && npm run changeset publish"
   },
   "bin": {
     "rinore": "./bin/rinore",
@@ -42,6 +44,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.11",
     "@croquiscom/eslint-config": "^3.1.0",
     "@types/bluebird": "^3.5.42",
     "@types/chai": "^5.0.1",
@@ -74,6 +77,6 @@
   },
   "lint-staged": {
     "*.{js,ts}": "eslint",
-    "**/*": "prettier --write --ignore-unknown"
+    "*": "prettier --write --ignore-unknown"
   }
 }

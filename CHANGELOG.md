@@ -1,5 +1,11 @@
 # rinore
 
+## 2.4.0
+
+### Minor Changes
+
+- 114478e: Fix failed to reload a file that uses ESM modules
+
 ## 2.3.0
 
 ### Minor Changes

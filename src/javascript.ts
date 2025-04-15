@@ -66,7 +66,7 @@ function replaceCompleter(replServer: any) {
       replServer.eval(expr, replServer.context, 'repl', (e?: any, object?: any) => {
         if (typeof object === 'function') {
           const argsMatch =
-            object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ||
+            object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ??
             object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
           replServer.output.write(os.EOL);
           replServer.output.write(`${result[1]}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);
@@ -96,9 +96,9 @@ export const start = (rinoreOptions: RinoreOptions): ReplServer => {
     // show argument on preview
     (Function.prototype as any)[inspect.custom] = function () {
       const argsMatch =
-        this.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ||
-        this.toString().match(/^[^(]*\(\s*([^)]*)\)/m) ||
-        this.constructor.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ||
+        this.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ??
+        this.toString().match(/^[^(]*\(\s*([^)]*)\)/m) ??
+        this.constructor.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ??
         this.constructor.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
 
       return `[Function: ${this.name}(${argsMatch[1]})]`;

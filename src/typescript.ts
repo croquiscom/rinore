@@ -145,7 +145,7 @@ function replaceCompleter(replServer: any, accumulatedCode: { input: string; out
         replServer.eval(result[1], replServer.context, 'repl_complete', (e?: any, object?: any) => {
           if (typeof object === 'function') {
             const argsMatch =
-              object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ||
+              object.toString().match(/^function\s*[^(]*\(\s*([^)]*)\)/m) ??
               object.toString().match(/^[^(]*\(\s*([^)]*)\)/m);
             replServer.output.write(os.EOL);
             replServer.output.write(`${result[1]}(\u001b[35m${argsMatch[1]}\u001b[39m)\r\n`);

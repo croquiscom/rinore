@@ -109,7 +109,7 @@ async function loadModule(moduleToLoad: string, name: string, local: boolean) {
       //
     }
     if (fileToWatch) {
-      watch(fileToWatch, () => {
+      watch(fileToWatch, async () => {
         try {
           console.log(`\nReloading module '${moduleToLoad}'...`);
           for (const m of Object.keys(require.cache)) {
@@ -119,18 +119,20 @@ async function loadModule(moduleToLoad: string, name: string, local: boolean) {
           }
           let reloaded: Record<string, any> = {};
           try {
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            reloaded = require(moduleToLoad);
+            // add _ts to ignore module cache
+            reloaded = await import(`${moduleToLoad}?_ts=${Date.now()}`);
           } catch (e: any) {
-            if (e.code === 'MODULE_NOT_FOUND' && fs.lstatSync(moduleToLoad).isDirectory()) {
+            if (
+              (e.code === 'MODULE_NOT_FOUND' || e.code === 'ERR_MODULE_NOT_FOUND') &&
+              fs.lstatSync(moduleToLoad).isDirectory()
+            ) {
               // load every file in the directory
               const files = fs.readdirSync(moduleToLoad);
               for (const file of files) {
                 if (file.endsWith('.ts') || file.endsWith('.js')) {
                   reloaded = {
                     ...reloaded,
-                    // eslint-disable-next-line @typescript-eslint/no-require-imports
-                    ...require(`${moduleToLoad}/${file}`),
+                    ...(await import(`${moduleToLoad}/${file}?_ts=${Date.now()}`)),
                   };
                 }
               }

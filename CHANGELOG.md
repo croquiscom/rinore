@@ -1,5 +1,11 @@
 # rinore
 
+## 2.5.0
+
+### Minor Changes
+
+- dc57dc7: update dependencies
+
 ## 2.4.0
 
 ### Minor Changes

@@ -1,5 +1,0 @@
----
-'rinore': minor
----
-
-update dependencies

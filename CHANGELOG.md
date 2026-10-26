@@ -1,5 +1,11 @@
 # rinore
 
+## 2.5.1
+
+### Patch Changes
+
+- 44e8f3b: fix reloading a local directory module without ts-node
+
 ## 2.5.0
 
 ### Minor Changes

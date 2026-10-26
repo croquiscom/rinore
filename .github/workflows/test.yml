@@ -25,7 +25,7 @@ jobs:
         run: npm ci
 
       - name: Run test
-        run: npm run test:cov
+        run: npm run test
 
       - name: Check file changes
         run: |
@@ -35,8 +35,3 @@ jobs:
           git status --short
           git diff
           git diff --quiet
-
-      - name: Coveralls
-        uses: coverallsapp/github-action@main
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import repl from 'repl';
+import { pathToFileURL } from 'url';
 import _ from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -118,27 +119,32 @@ async function loadModule(moduleToLoad: string, name: string, local: boolean) {
             }
           }
           let reloaded: Record<string, any> = {};
+          // add _ts to ignore module cache
+          const ts = Date.now();
+          let resolved: string | undefined;
           try {
-            // add _ts to ignore module cache
-            reloaded = await import(`${moduleToLoad}?_ts=${Date.now()}`);
+            resolved = require.resolve(moduleToLoad, { paths: [process.cwd()] });
           } catch (e: any) {
-            if (
-              (e.code === 'MODULE_NOT_FOUND' || e.code === 'ERR_MODULE_NOT_FOUND') &&
-              fs.lstatSync(moduleToLoad).isDirectory()
-            ) {
-              // load every file in the directory
-              const files = fs.readdirSync(moduleToLoad);
-              for (const file of files) {
-                if (file.endsWith('.ts') || file.endsWith('.js')) {
-                  reloaded = {
-                    ...reloaded,
-                    ...(await import(`${moduleToLoad}/${file}?_ts=${Date.now()}`)),
-                  };
-                }
-              }
-            } else {
+            if (!(e.code === 'MODULE_NOT_FOUND' && fs.lstatSync(moduleToLoad).isDirectory())) {
               throw e;
             }
+          }
+          if (resolved) {
+            reloaded = await import(`${pathToFileURL(resolved).href}?_ts=${ts}`);
+          } else {
+            // load every file in the directory
+            const files = fs.readdirSync(moduleToLoad);
+            for (const file of files) {
+              if (file.endsWith('.ts') || file.endsWith('.js')) {
+                reloaded = {
+                  ...reloaded,
+                  ...(await import(`${pathToFileURL(path.join(moduleToLoad, file)).href}?_ts=${ts}`)),
+                };
+              }
+            }
+          }
+          if (reloaded.default) {
+            reloaded = reloaded.default;
           }
           if (name === '*') {
             for (const key in reloaded) {
